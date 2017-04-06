@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * Created by dominik on 06.04.17.
@@ -22,6 +24,8 @@ public class Role {
     private Long id;
 
     @Column(name = "name", length = 30, nullable = false)
+    @NotNull(message = "{null.message}")
+    @Pattern(regexp = "^[A-Z_]+$", message = "{groupNamePattern.message}")
     @JsonProperty("NAME")
     @ApiModelProperty(notes = "Role's name", required = true, position = 2)
     private String name;
