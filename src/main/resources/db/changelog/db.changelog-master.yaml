@@ -8,3 +8,6 @@ databaseChangeLog:
   - include:
       file: changelog_3__add_initial_roles_to_roles_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_4__create_users-roles_table.yaml
+      relativeToChangelogFile: true
