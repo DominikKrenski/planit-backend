@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: dominik
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: true
+            sql: INSERT INTO roles(name) VALUES ('ROLE_ADMIN'), ('ROLE_STUDENT');
