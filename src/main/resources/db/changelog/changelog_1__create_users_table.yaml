@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: dominik
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  defaultValueComputed: nextval('users_id_seq')
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users_table
+                    nullable: false
+              - column:
+                  name: login
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uniq_login_users_table
+              - column:
+                  name: password
+                  type: VARCHAR (60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR (50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: VARCHAR (50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR (255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uniq_email_users_table
+              - column:
+                  name: user_group
+                  type: VARCHAR (10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: index_number
+                  type: INT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uniq_index_no_users_table
+              - column:
+                  name: start_year
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: info
+                  type: VARCHAR(2147483647)
+                  constraints:
+                    defaultValue: ''
+
+        - createSequence:
+            sequenceName: users_id_seq
+            ownedBy: users
