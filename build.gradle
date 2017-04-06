@@ -25,6 +25,11 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+jar {
+    baseName = 'planit-backend'
+    version = '1.0.0'
+}
+
 repositories {
     mavenCentral()
 }
