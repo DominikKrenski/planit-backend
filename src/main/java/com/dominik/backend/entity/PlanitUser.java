@@ -1,6 +1,8 @@
 package com.dominik.backend.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by dominik on 06.04.17.
@@ -45,6 +47,13 @@ public class PlanitUser {
 
     @Column(name = "info", length = 2147483647)
     private String info;
+
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "users_roles",
+                joinColumns = {@JoinColumn(name = "user_id")},
+                inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private Set<Role> roles = new HashSet<>();
 
     protected PlanitUser() {}
 
