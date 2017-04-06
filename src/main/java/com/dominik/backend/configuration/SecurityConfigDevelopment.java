@@ -36,7 +36,7 @@ public class SecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/console").permitAll()
+                .antMatchers("/console/**").permitAll()
                 .anyRequest()
                 .authenticated();
 
