@@ -1,5 +1,8 @@
 package com.dominik.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 
 /**
@@ -14,9 +17,13 @@ public class Role {
     @SequenceGenerator(sequenceName = "roles_id_seq", name = "RoleIdSequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RoleIdSequence")
     @Column(name = "id")
+    @JsonProperty("ID")
+    @ApiModelProperty(notes = "Role's id", required = false, position = 1)
     private Long id;
 
     @Column(name = "name", length = 30, nullable = false)
+    @JsonProperty("NAME")
+    @ApiModelProperty(notes = "Role's name", required = true, position = 2)
     private String name;
 
     protected Role() {}
