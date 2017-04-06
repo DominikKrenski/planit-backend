@@ -26,12 +26,12 @@ public class PlanitUser {
 
     @Column(name = "login", length = 20, nullable = false, unique = true)
     @JsonProperty("LOGIN")
-    @ApiModelProperty(notes = "User's login", required = true, position = 2)
+    @ApiModelProperty(notes = "User's login, mininum length: 3, maximum length: 20", required = true, position = 2)
     private String login;
 
     @Column(name = "password", length = 60, nullable = false)
     @JsonProperty("PASSWORD")
-    @ApiModelProperty(notes = "User's password", required = true, position = 3)
+    @ApiModelProperty(notes = "User's password, minimun length: 5, maximum length: 20", required = true, position = 3)
     private String password;
 
     @Transient
@@ -41,12 +41,12 @@ public class PlanitUser {
 
     @Column(name = "name", length = 50, nullable = false)
     @JsonProperty("NAME")
-    @ApiModelProperty(notes = "User's name", required = true, position = 5)
+    @ApiModelProperty(notes = "User's name, minimum length: 3, maximum length: 50", required = true, position = 5)
     private String name;
 
     @Column(name = "surname", length = 50, nullable = false)
     @JsonProperty("SURNAME")
-    @ApiModelProperty(notes = "User's surname", required = true, position = 6)
+    @ApiModelProperty(notes = "User's surname, minimum length: 3, maximum length: 50", required = true, position = 6)
     private String surname;
 
     @Column(name = "email", length = 255, nullable = false, unique = true)
@@ -56,7 +56,7 @@ public class PlanitUser {
 
     @Column(name = "user_group", length = 10, nullable = false)
     @JsonProperty("GROUP")
-    @ApiModelProperty(notes = "User's group", required = true, position = 8)
+    @ApiModelProperty(notes = "User's group, minimum length: 1, maximum length: 10", required = true, position = 8)
     private String group;
 
     @Column(name = "index_number", nullable = false, unique = true)
