@@ -43,7 +43,7 @@ public class PlanitUser {
     @Column(name = "start_year", nullable = false)
     private int startYear;
 
-    @Column(name = "info", length = 2147483647 ,nullable = true)
+    @Column(name = "info", length = 2147483647)
     private String info;
 
     protected PlanitUser() {}
