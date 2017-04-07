@@ -38,7 +38,7 @@ public class PlanitUser {
 
     @Column(name = "password", length = 60, nullable = false)
     @NotNull(message = "{null.message}")
-    @Size(min = 5, max = 20, message = "{passwordLength.message}")
+    @Size(min = 5, message = "{passwordLength.message}")
     @JsonProperty("PASSWORD")
     @ApiModelProperty(notes = "User's password, minimun length: 5, maximum length: 20", required = true, position = 3)
     private String password;
@@ -202,5 +202,63 @@ public class PlanitUser {
 
     public String getInfo() {
         return  info;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlanitUser)) return false;
+
+        PlanitUser that = (PlanitUser) o;
+
+        if (getIndexNumber() != that.getIndexNumber()) return false;
+        if (getStartYear() != that.getStartYear()) return false;
+        if (!getLogin().equals(that.getLogin())) return false;
+        if (!getPassword().equals(that.getPassword())) return false;
+        if (!getName().equals(that.getName())) return false;
+        if (!getSurname().equals(that.getSurname())) return false;
+        if (!getEmail().equals(that.getEmail())) return false;
+        if (!getGroup().equals(that.getGroup())) return false;
+        return getInfo().equals(that.getInfo());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getLogin().hashCode();
+        result = 31 * result + getPassword().hashCode();
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + getSurname().hashCode();
+        result = 31 * result + getEmail().hashCode();
+        result = 31 * result + getGroup().hashCode();
+        result = 31 * result + getIndexNumber();
+        result = 31 * result + getStartYear();
+        result = 31 * result + getInfo().hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PlanitUser{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", repeatedPassword='" + repeatedPassword + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", group='" + group + '\'' +
+                ", indexNumber=" + indexNumber +
+                ", startYear=" + startYear +
+                ", info='" + info + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
