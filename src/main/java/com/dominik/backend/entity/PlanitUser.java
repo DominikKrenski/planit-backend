@@ -1,6 +1,7 @@
 package com.dominik.backend.entity;
 
 import com.dominik.backend.validator.PasswordMatch;
+import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -89,6 +90,7 @@ public class PlanitUser {
 
     @Column(name = "start_year", nullable = false)
     @NotNull(message = "{null.message}")
+    @ValidYear
     @JsonProperty("START_YEAR")
     @ApiModelProperty(notes = "User's study start year", required = true, position = 10)
     private int startYear;

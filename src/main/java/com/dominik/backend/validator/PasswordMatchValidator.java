@@ -23,10 +23,14 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
 
         try {
-            final Object firstValue = BeanUtils.getProperty(value, password);
-            final Object secondValue = BeanUtils.getArrayProperty(value, passwordRepeated);
+            final String firstValue = BeanUtils.getProperty(value, password);
+            final String secondValue = BeanUtils.getProperty(value, passwordRepeated);
 
-            return firstValue == null && secondValue == null || firstValue != null && firstValue.equals(secondValue);
+            if (firstValue.equals(secondValue)) {
+                return true;
+            }
+
+            return false;
         }
         catch (final Exception ex) {
             throw new RuntimeException(ex.getMessage(), ex);
