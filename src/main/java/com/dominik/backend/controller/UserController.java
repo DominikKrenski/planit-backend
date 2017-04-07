@@ -17,5 +17,5 @@ public class UserController {
 
     public static final String URL = "planit-backend.com:8080/api";
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
-    
+
 }
