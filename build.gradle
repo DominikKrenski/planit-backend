@@ -46,6 +46,7 @@ ext {
     liquibaseVersion = '3.5.3'
     jacksonVersion = '2.8.7'
     swaggerVersion = '2.6.1'
+    beanUtilsVersion = '1.9.3'
 }
 
 dependencies {
@@ -71,4 +72,7 @@ dependencies {
     // SWAGGER DEPENDENCIES
     compile "io.springfox:springfox-swagger2:${swaggerVersion}"
     compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+
+    // APACHE BEAN UTILS DEPENDENCIES
+    compile "commons-beanutils:commons-beanutils:${beanUtilsVersion}"
 }

@@ -1,5 +1,6 @@
 package com.dominik.backend.entity;
 
+import com.dominik.backend.validator.PasswordMatch;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@PasswordMatch(first = "password", second = "repeatedPassword")
 public class PlanitUser {
 
     @Id
