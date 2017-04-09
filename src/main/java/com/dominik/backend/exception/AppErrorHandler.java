@@ -48,7 +48,7 @@ public class AppErrorHandler extends ResponseEntityExceptionHandler {
 
         List<String> errors = new ArrayList<>();
 
-        AppError appError = new AppError(status, "Wystąpiły błędy podczas przetwarzania formularza " + error.getErrorCount());
+        AppError appError = new AppError(status, "Wystąpiły błędy podczas przetwarzania formularza: " + error.getErrorCount());
 
         for (ObjectError objectError: error.getAllErrors()) {
             errors.add(objectError.getDefaultMessage());

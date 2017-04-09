@@ -16,6 +16,7 @@ public class PlanitUserServiceImpl implements PlanitUserService {
 
     @Autowired
     public PlanitUserServiceImpl(PlanitUserRepository userRepository) {
+
         this.userRepository = userRepository;
     }
 

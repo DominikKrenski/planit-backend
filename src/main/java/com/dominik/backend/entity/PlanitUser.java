@@ -43,7 +43,7 @@ public class PlanitUser {
     @NotNull(message = "{null.message}")
     @Size(min = 5, message = "{passwordLength.message}")
     @JsonProperty("PASSWORD")
-    @ApiModelProperty(notes = "User's password, minimun length: 5, maximum length: 20", required = true, position = 3)
+    @ApiModelProperty(notes = "User's password, minimun length: 5", required = true, position = 3)
     private String password;
 
     @Transient
@@ -62,7 +62,7 @@ public class PlanitUser {
     @Column(name = "surname", length = 50, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 3, max = 50, message = "{surnameLength.message}")
-    @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń\\-]+$")
+    @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń\\-]+$", message = "{surnamePattern.message}")
     @JsonProperty("SURNAME")
     @ApiModelProperty(notes = "User's surname, minimum length: 3, maximum length: 50", required = true, position = 6)
     private String surname;

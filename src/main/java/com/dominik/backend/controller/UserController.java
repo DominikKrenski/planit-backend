@@ -56,6 +56,7 @@ public class UserController {
 
         planitUser.getRoles().add(role);
         planitUser.setPassword(passwordEncoder.encode(planitUser.getPassword()));
+        planitUser.setRepeatedPassword(planitUser.getPassword());
 
         AppResponse response = new AppResponse();
         HttpHeaders headers = new HttpHeaders();
