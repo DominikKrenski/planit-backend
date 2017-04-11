@@ -47,6 +47,7 @@ ext {
     jacksonVersion = '2.8.7'
     swaggerVersion = '2.6.1'
     beanUtilsVersion = '1.9.3'
+    jwtVersion = '0.7.0'
 }
 
 dependencies {
@@ -75,4 +76,7 @@ dependencies {
 
     // APACHE BEAN UTILS DEPENDENCIES
     compile "commons-beanutils:commons-beanutils:${beanUtilsVersion}"
+
+    // JSON WEB TOKEN DEPENDENCIES
+    compile "io.jsonwebtoken:jjwt:${jwtVersion}"
 }
