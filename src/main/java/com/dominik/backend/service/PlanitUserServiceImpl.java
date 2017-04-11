@@ -24,4 +24,9 @@ public class PlanitUserServiceImpl implements PlanitUserService {
     public PlanitUser saveUser(PlanitUser user) {
         return userRepository.save(user);
     }
+
+    @Override
+    public PlanitUser findUserByLogin(String login) {
+        return userRepository.findOneByLogin(login);
+    }
 }

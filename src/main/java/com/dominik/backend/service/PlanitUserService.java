@@ -8,4 +8,5 @@ import com.dominik.backend.entity.PlanitUser;
 public interface PlanitUserService {
 
     PlanitUser saveUser(PlanitUser user);
+    PlanitUser findUserByLogin(String login);
 }

@@ -25,7 +25,7 @@ public class AccountCredentials {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
     public String getPassword() {
         return password;
     }
