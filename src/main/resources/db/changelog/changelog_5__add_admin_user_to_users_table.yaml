@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: dominik
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: true
+            sql: INSERT INTO users(login, password, name, surname, email, user_group, index_number, start_year, info) VALUES
+                ('Dominik', '$2a$10$uQl7fUFicWQrfAekxMDsj..EL6TdlltRjmVNmf9anIyzG4ghDb/62', 'Dominik', 'Kreński', 'dominik.krenski@gmail.com', '2',96872, 2014, 'Administrator aplikacji');

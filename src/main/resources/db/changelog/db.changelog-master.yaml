@@ -11,3 +11,9 @@ databaseChangeLog:
   - include:
       file: changelog_4__create_users-roles_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_5__add_admin_user_to_users_table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog_6__create_relationship_with_roles_table.yaml
+      relativeToChangelogFile: true
