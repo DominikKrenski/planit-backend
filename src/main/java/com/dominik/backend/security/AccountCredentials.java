@@ -9,6 +9,8 @@ public class AccountCredentials {
     private String login;
     private String password;
 
+    public AccountCredentials() {}
+
     public AccountCredentials(String login, String password) {
         this.login = login;
         this.password = password;
@@ -25,7 +27,7 @@ public class AccountCredentials {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public String getPassword() {
         return password;
     }

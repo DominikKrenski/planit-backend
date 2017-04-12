@@ -101,7 +101,7 @@ public class PlanitUser {
     private String info;
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
                 joinColumns = {@JoinColumn(name = "user_id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
