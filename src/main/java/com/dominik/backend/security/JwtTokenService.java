@@ -63,17 +63,9 @@ public class JwtTokenService {
                 throw new ServletException("Issuer niezgodny");
             }
 
-            String login = Jwts.parser()
-                    .setSigningKey(key)
-                    .parseClaimsJws(jwtToken.replace(prefix, ""))
-                    .getBody()
-                    .getSubject();
+            String login = claims.getBody().getSubject();
 
-            String authorities = Jwts.parser()
-                    .setSigningKey(key)
-                    .parseClaimsJws(jwtToken.replace(prefix, ""))
-                    .getBody()
-                    .get("roles", String.class);
+            String authorities = claims.getBody().get("roles", String.class);
 
             List<GrantedAuthority> roles = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
