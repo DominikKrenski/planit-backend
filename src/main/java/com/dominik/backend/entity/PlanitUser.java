@@ -27,7 +27,6 @@ public class PlanitUser {
     @SequenceGenerator(sequenceName = "users_id_seq", name = "UserIdSequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserIdSequence")
     @Column(name = "id")
-    @JsonProperty("ID")
     @ApiModelProperty(notes = "User's id (empty if request incomes)", required = false, position = 1)
     private Long id;
 
@@ -42,12 +41,10 @@ public class PlanitUser {
     @Column(name = "password", length = 60, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 5, message = "{passwordLength.message}")
-    @JsonProperty("PASSWORD")
     @ApiModelProperty(notes = "User's password, minimun length: 5", required = true, position = 3)
     private String password;
 
     @Transient
-    @JsonProperty("REPEATED_PASSWORD")
     @ApiModelProperty(notes = "User's repeated password", required = true, position = 4)
     private String repeatedPassword;
 
@@ -124,6 +121,12 @@ public class PlanitUser {
         this.info = info;
     }
 
+    @JsonIgnore
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @JsonProperty("ID")
     public Long getId() {
         return id;
     }
@@ -136,18 +139,22 @@ public class PlanitUser {
         return login;
     }
 
+    @JsonProperty("PASSWORD")
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty("REPEATED_PASSWORD")
     public void setRepeatedPassword(String repeatedPassword) {
         this.repeatedPassword = repeatedPassword;
     }
 
+    @JsonIgnore
     public String getRepeatedPassword() {
         return repeatedPassword;
     }

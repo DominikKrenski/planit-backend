@@ -5,6 +5,8 @@ import com.dominik.backend.repository.PlanitUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by dominik on 07.04.17.
  */
@@ -28,5 +30,10 @@ public class PlanitUserServiceImpl implements PlanitUserService {
     @Override
     public PlanitUser findUserByLogin(String login) {
         return userRepository.findOneByLogin(login);
+    }
+
+    @Override
+    public List<PlanitUser> getAllUsers() {
+        return (List<PlanitUser>) userRepository.findAll();
     }
 }
