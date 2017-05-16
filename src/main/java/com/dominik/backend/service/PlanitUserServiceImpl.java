@@ -36,4 +36,9 @@ public class PlanitUserServiceImpl implements PlanitUserService {
     public List<PlanitUser> getAllUsers() {
         return (List<PlanitUser>) userRepository.findAll();
     }
+
+    @Override
+    public PlanitUser findUserById(Long id) {
+        return userRepository.findOne(id);
+    }
 }

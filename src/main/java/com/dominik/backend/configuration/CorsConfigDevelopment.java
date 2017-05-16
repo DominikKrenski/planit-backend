@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Created by dominik on 06.04.17.
  */
 
-@Configuration
+/*@Configuration
 @Profile("development")
 public class CorsConfigDevelopment extends WebMvcConfigurerAdapter {
 
@@ -19,6 +19,8 @@ public class CorsConfigDevelopment extends WebMvcConfigurerAdapter {
                 .addMapping("/**")
                 .allowedMethods("PUT", "POST", "GET", "DELETE", "OPTIONS")
                 .allowedOrigins("http://localhost:9000")
+                .allowedHeaders("Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
+                .exposedHeaders("Authorization")
                 .maxAge(3600);
     }
-}
+}*/

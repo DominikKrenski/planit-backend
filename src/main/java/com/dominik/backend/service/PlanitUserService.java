@@ -11,5 +11,6 @@ public interface PlanitUserService {
 
     PlanitUser saveUser(PlanitUser user);
     PlanitUser findUserByLogin(String login);
+    PlanitUser findUserById(Long id);
     List<PlanitUser> getAllUsers();
 }

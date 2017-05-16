@@ -102,7 +102,7 @@ public class PlanitUser {
     @JoinTable(name = "users_roles",
                 joinColumns = {@JoinColumn(name = "user_id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    @JsonIgnore
+    //@JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     protected PlanitUser() {}
@@ -219,6 +219,7 @@ public class PlanitUser {
         this.roles = roles;
     }
 
+    @JsonProperty("ROLES")
     public Set<Role> getRoles() {
         return roles;
     }
