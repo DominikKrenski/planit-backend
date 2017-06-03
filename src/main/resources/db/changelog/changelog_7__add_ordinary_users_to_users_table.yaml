@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: dominik
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: true
+            sql: INSERT INTO users(login, password, name, surname, email, user_group, index_number, start_year, info) VALUES
+                ('Dorota', '$2a$10$0MbGlKeaAn06MMiAoP3aaeof/coNxQJh6uPvkw0Gbn4INvhf7LxAy', 'Dorota', 'Kreńska', 'dorciad@interia.pl', '2a',147503, 2013, 'Mam fajnego męża'),
+                ('Olek', '$2a$10$bB28YqrtF70m33htYXzsEu/uR8.mwaw8Wvn.vy07B2S3ywyuefxza', 'Aleksander', 'Kreński', 'olek@gmail.com', '1', 27987, 2016, 'Mój kochany synek');

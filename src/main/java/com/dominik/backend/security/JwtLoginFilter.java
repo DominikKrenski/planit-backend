@@ -47,7 +47,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         throws IOException, ServletException
     {
         Set<String> auth = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        
+
         String authorities = auth.iterator().next();
 
         authorities = authorities.replace("[", "").replace("]", "");
