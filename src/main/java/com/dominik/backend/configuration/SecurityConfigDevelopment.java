@@ -60,6 +60,7 @@ public class SecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
                 .antMatchers("/console/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register", "/user/register/").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/login", "/user/login/").permitAll()
+                .antMatchers("user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()

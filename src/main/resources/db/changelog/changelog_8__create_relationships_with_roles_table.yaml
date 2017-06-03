@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 8
+      author: dominik
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: true
+            sql: INSERT INTO users_roles(user_id, role_id) VALUES  (2, 2), (3, 2);

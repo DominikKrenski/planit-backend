@@ -215,7 +215,7 @@ public class PlanitUser {
         return  info;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }

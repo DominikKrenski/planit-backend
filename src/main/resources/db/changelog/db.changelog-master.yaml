@@ -20,3 +20,6 @@ databaseChangeLog:
   - include:
       file: changelog_7__add_ordinary_users_to_users_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_8__create_relationships_with_roles_table.yaml
+      relativeToChangelogFile: true
