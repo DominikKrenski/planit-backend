@@ -5,6 +5,7 @@ import com.dominik.backend.entity.Role;
 import com.dominik.backend.response.AppResponse;
 import com.dominik.backend.service.PlanitUserService;
 import com.dominik.backend.service.RoleService;
+import com.dominik.backend.util.Email;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -35,11 +36,13 @@ public class AdminController {
 
     private PlanitUserService planitUserService;
     private RoleService roleService;
+    private JavaMailSender javaMailSender;
 
     @Autowired
-    public AdminController(PlanitUserService planitUserService, RoleService roleService) {
+    public AdminController(PlanitUserService planitUserService, RoleService roleService, JavaMailSender javaMailSender) {
         this.planitUserService = planitUserService;
         this.roleService = roleService;
+        this.javaMailSender = javaMailSender;
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET,
@@ -80,5 +83,22 @@ public class AdminController {
         response.setMessage("Poprawnie nadano przywileje administratora");
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value="/user/send-email", method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void sendEmail(@Valid @RequestBody Email email) {
+
+        logger.info("ŻĄDANIE WYSŁANIA WIADOMOŚCI EMAIL");
+        logger.info("ADRES EMAIL ODBIORCY: " + email.getReceiverEmailAddress());
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setTo(email.getReceiverEmailAddress());
+        mailMessage.setSubject(email.getSubject());
+        mailMessage.setFrom("admin@planit.com");
+        mailMessage.setText(email.getMessage());
+
+        javaMailSender.send(mailMessage);
     }
 }
