@@ -41,4 +41,9 @@ public class PlanitUserServiceImpl implements PlanitUserService {
     public PlanitUser findUserById(Long id) {
         return userRepository.findOne(id);
     }
+
+    @Override
+    public void deleteUserById(Long id) {
+        userRepository.delete(id);
+    }
 }
