@@ -1,6 +1,7 @@
 package com.dominik.backend.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Pattern;
 
@@ -10,22 +11,30 @@ import javax.validation.constraints.Pattern;
 public class Email {
 
     @JsonProperty("RECEIVER")
+    @ApiModelProperty(notes = "Field required if email is sent to one user and must be empty if email is sent to all users", position = 1)
     private String receiverEmailAddress;
 
     @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń.,()_\\- ]+$", message = "{subjectPattern.message}")
     @JsonProperty("SUBJECT")
+    @ApiModelProperty(notes = "Subject of given email message", required = true, position = 2)
     private String subject;
 
     @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń.,()\\[\\]{}_\\- ]+$", message = "{bodyPattern.message}")
     @JsonProperty("MESSAGE")
+    @ApiModelProperty(notes = "Email body", required = true, position = 3)
     private String message;
 
     public Email() {}
 
-    public Email(String receiverEmailAddress, String subject, String message) {
-        this.receiverEmailAddress = receiverEmailAddress;
+    public Email(String subject, String message) {
         this.subject = subject;
         this.message = message;
+        this.receiverEmailAddress = null;
+    }
+
+    public Email(String receiverEmailAddress, String subject, String message) {
+        this(subject, message);
+        this.receiverEmailAddress = receiverEmailAddress;
     }
 
     public void setReceiverEmailAddress(String receiverEmailAddress) {

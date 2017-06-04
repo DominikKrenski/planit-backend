@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlanitUser> getUsers() {
 
         logger.info("NADESZŁO ŻĄDANIE WYPISANIA WSZYSTKICH UŻYTKOWNIKÓW APLIKACJI");
@@ -57,7 +58,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/user/grant/{id}", method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> grantAdminRights(@PathVariable Long id) {
 
         logger.info("NADESZŁO ŻĄDANIE NADANIA PRAW ADMINISTRATORA UŻYTKOWNIKOWI");
@@ -73,7 +74,7 @@ public class AdminController {
 
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        if (planitUserService.saveUser(user) == null ) {
+        if (planitUserService.saveUser(user) == null) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage("Wystąpił problem podczas zapisu do bazy danych");
             return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,8 +86,8 @@ public class AdminController {
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value="/user/send-email", method = RequestMethod.POST,
-                    consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/send-email", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void sendEmail(@Valid @RequestBody Email email) {
 
         logger.info("ŻĄDANIE WYSŁANIA WIADOMOŚCI EMAIL");
@@ -95,6 +96,31 @@ public class AdminController {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
         mailMessage.setTo(email.getReceiverEmailAddress());
+        mailMessage.setSubject(email.getSubject());
+        mailMessage.setFrom("admin@planit.com");
+        mailMessage.setText(email.getMessage());
+
+        javaMailSender.send(mailMessage);
+    }
+
+    @RequestMapping(value = "/user/send-emails", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void sendEmails(@Valid @RequestBody Email email) {
+
+        logger.info("ŻĄDANIE WYSŁANIA WIADOMOŚCI EMAIL DO WSZYSTKICH UŻYTKOWNIKÓW APLIKACJI");
+
+        List<PlanitUser> receivers = planitUserService.getAllUsers();
+
+        List<String> emails = new LinkedList<>();
+
+        for(PlanitUser receiver : receivers) {
+
+            emails.add(receiver.getEmail());
+        }
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setTo(emails.toArray(new String[0]));
         mailMessage.setSubject(email.getSubject());
         mailMessage.setFrom("admin@planit.com");
         mailMessage.setText(email.getMessage());
