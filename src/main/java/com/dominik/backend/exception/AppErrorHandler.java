@@ -81,4 +81,16 @@ public class AppErrorHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<Object>(appError, headers, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({CustomException.class})
+    protected ResponseEntity<Object> handleCustomException(CustomException ex, WebRequest request) {
+
+        logger.info("WEJŚCIE DO METODY OBSŁUGI BŁĘDU CUSTOM_EXCEPTION");
+
+        AppError appError = new AppError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<Object>(appError, headers, HttpStatus.BAD_REQUEST);
+    }
 }

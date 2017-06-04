@@ -1,36 +1,21 @@
-package com.dominik.backend.entity;
+package com.dominik.backend.util;
 
-import com.dominik.backend.validator.PasswordMatch;
 import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Email;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * Created by dominik on 06.04.17.
+ * Created by dominik on 03.06.17.
  */
 
-@Entity
-@Table(name = "users")
-@PasswordMatch(first = "password", second = "repeatedPassword")
-public class PlanitUser {
+public class UpdateUser {
 
-    @Id
-    @SequenceGenerator(sequenceName = "users_id_seq", name = "UserIdSequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserIdSequence")
-    @Column(name = "id")
-    @ApiModelProperty(notes = "User's id (empty if request incomes)", required = false, position = 1)
-    private Long id;
-
-    @Column(name = "login", length = 20, nullable = false, unique = true)
     @NotNull(message = "{null.message}")
     @Size(min = 3, max = 20, message = "{loginLength.message}")
     @Pattern(regexp = "^[A-Za-z0-9ĘÓĄŚŁŻŹĆŃęóąśłżźćń]+$", message = "loginPattern.message")
@@ -38,17 +23,12 @@ public class PlanitUser {
     @ApiModelProperty(notes = "User's login, mininum length: 3, maximum length: 20", required = true, position = 2)
     private String login;
 
-    @Column(name = "password", length = 60, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 5, message = "{passwordLength.message}")
     @ApiModelProperty(notes = "User's password, minimun length: 5", required = true, position = 3)
     private String password;
 
-    @Transient
-    @ApiModelProperty(notes = "User's repeated password", required = true, position = 4)
-    private String repeatedPassword;
 
-    @Column(name = "name", length = 50, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 3, max = 50, message = "{nameLength.message}")
     @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń]+$", message = "{namePattern.message}")
@@ -56,7 +36,6 @@ public class PlanitUser {
     @ApiModelProperty(notes = "User's name, minimum length: 3, maximum length: 50", required = true, position = 5)
     private String name;
 
-    @Column(name = "surname", length = 50, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 3, max = 50, message = "{surnameLength.message}")
     @Pattern(regexp = "^[A-Za-zĘÓĄŚŁŻŹĆŃęóąśłżźćń\\-]+$", message = "{surnamePattern.message}")
@@ -64,14 +43,12 @@ public class PlanitUser {
     @ApiModelProperty(notes = "User's surname, minimum length: 3, maximum length: 50", required = true, position = 6)
     private String surname;
 
-    @Column(name = "email", length = 255, nullable = false, unique = true)
     @NotNull(message = "{null.message}")
     @Email(message = "{email.message}")
     @JsonProperty("EMAIL")
     @ApiModelProperty(notes = "User's email", required = true, position = 7)
     private String email;
 
-    @Column(name = "user_group", length = 10, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 1, max = 10, message = "{groupLength.message}")
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "{groupPattern.message}")
@@ -79,39 +56,26 @@ public class PlanitUser {
     @ApiModelProperty(notes = "User's group, minimum length: 1, maximum length: 10", required = true, position = 8)
     private String group;
 
-    @Column(name = "index_number", nullable = false, unique = true)
     @NotNull(message = "{null.message}")
     @JsonProperty("INDEX_NUMBER")
     @ApiModelProperty(notes = "User's index number", required = true, position = 9)
     private int indexNumber;
 
-    @Column(name = "start_year", nullable = false)
     @NotNull(message = "{null.message}")
     @ValidYear
     @JsonProperty("START_YEAR")
     @ApiModelProperty(notes = "User's study start year", required = true, position = 10)
     private int startYear;
 
-    @Column(name = "info", length = 2147483647)
     @JsonProperty("INFO")
     @ApiModelProperty(notes = "Info about user", required = true, position = 11)
     private String info;
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-                joinColumns = {@JoinColumn(name = "user_id")},
-                inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    //@JsonIgnore
-    private Set<Role> roles = new HashSet<>();
+    protected UpdateUser() {}
 
-    protected PlanitUser() {}
-
-    public PlanitUser(String login, String password, String repeatedPassword, String name, String surname, String email,
-                      String group, int indexNumber, int startYear, String info) {
+    public UpdateUser(String login, String name, String surname, String email, String group, int indexNumber, int startYear, String info) {
         this.login = login;
-        this.password = password;
-        this.repeatedPassword = repeatedPassword;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -119,17 +83,15 @@ public class PlanitUser {
         this.indexNumber = indexNumber;
         this.startYear = startYear;
         this.info = info;
+        this.password = "";
     }
 
-    @JsonIgnore
-    public void setId(Long id) {
-        this.id = id;
+    public UpdateUser(String login, String password, String name, String surname, String email,
+                      String group, int indexNumber, int startYear, String info) {
+        this(login, name, surname, email, group, indexNumber, startYear, info);
+        this.password = password;
     }
 
-    @JsonProperty("ID")
-    public Long getId() {
-        return id;
-    }
 
     public void setLogin(String login) {
         this.login = login;
@@ -147,16 +109,6 @@ public class PlanitUser {
     @JsonIgnore
     public String getPassword() {
         return password;
-    }
-
-    @JsonProperty("REPEATED_PASSWORD")
-    public void setRepeatedPassword(String repeatedPassword) {
-        this.repeatedPassword = repeatedPassword;
-    }
-
-    @JsonIgnore
-    public String getRepeatedPassword() {
-        return repeatedPassword;
     }
 
     public void setName(String name) {
@@ -215,27 +167,16 @@ public class PlanitUser {
         return  info;
     }
 
-    @JsonIgnore
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    @JsonProperty("ROLES")
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PlanitUser)) return false;
+        if (!(o instanceof UpdateUser)) return false;
 
-        PlanitUser that = (PlanitUser) o;
+        UpdateUser that = (UpdateUser) o;
 
         if (getIndexNumber() != that.getIndexNumber()) return false;
         if (getStartYear() != that.getStartYear()) return false;
         if (!getLogin().equals(that.getLogin())) return false;
-        if (!getPassword().equals(that.getPassword())) return false;
         if (!getName().equals(that.getName())) return false;
         if (!getSurname().equals(that.getSurname())) return false;
         if (!getEmail().equals(that.getEmail())) return false;
@@ -246,7 +187,6 @@ public class PlanitUser {
     @Override
     public int hashCode() {
         int result = getLogin().hashCode();
-        result = 31 * result + getPassword().hashCode();
         result = 31 * result + getName().hashCode();
         result = 31 * result + getSurname().hashCode();
         result = 31 * result + getEmail().hashCode();
@@ -259,11 +199,9 @@ public class PlanitUser {
 
     @Override
     public String toString() {
-        return "PlanitUser{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
+        return "UpdateUser{" +
+                "login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", repeatedPassword='" + repeatedPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
@@ -271,7 +209,6 @@ public class PlanitUser {
                 ", indexNumber=" + indexNumber +
                 ", startYear=" + startYear +
                 ", info='" + info + '\'' +
-                ", roles=" + roles +
                 '}';
     }
 }
