@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 9
+      author: dominik
+      changes:
+        - createTable:
+            tableName: tokens
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  defaultValueComputed: nextval('tokens_id_seq')
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_tokens_table
+                    nullable: false
+              - column:
+                  name: token
+                  type: VARCHAR (36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk1_users_table
+                    references: users(id)
+
+        - createSequence:
+            sequenceName: tokens_id_seq
+            ownedBy: tokens

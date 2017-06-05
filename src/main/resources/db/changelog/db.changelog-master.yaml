@@ -23,3 +23,6 @@ databaseChangeLog:
   - include:
       file: changelog_8__create_relationships_with_roles_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_9__create_tokens_table.yaml
+      relativeToChangelogFile: true
