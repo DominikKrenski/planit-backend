@@ -12,4 +12,5 @@ import java.util.List;
 public interface PlanitUserRepository extends CrudRepository<PlanitUser, Long> {
 
     PlanitUser findOneByLogin(String login);
+    PlanitUser findOneByEmail(String email);
 }

@@ -1,13 +1,14 @@
 package com.dominik.backend.controller;
 
+import com.dominik.backend.entity.PasswordToken;
 import com.dominik.backend.entity.PlanitUser;
 import com.dominik.backend.entity.Role;
 import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
+import com.dominik.backend.service.PasswordTokenService;
 import com.dominik.backend.service.PlanitUserService;
 import com.dominik.backend.service.RoleService;
-import com.dominik.backend.util.ChangePassword;
-import com.dominik.backend.util.UpdateUser;
+import com.dominik.backend.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import org.slf4j.Logger;
@@ -17,15 +18,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 /**
@@ -39,13 +40,18 @@ public class UserController {
 
     private PlanitUserService planitUserService;
     private RoleService roleService;
+    private PasswordTokenService tokenService;
     private PasswordEncoder passwordEncoder;
+    private JavaMailSender mailSender;
 
     @Autowired
-    public UserController(PlanitUserService planitUserService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserController(PlanitUserService planitUserService, RoleService roleService, PasswordTokenService tokenService,
+                          PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
         this.planitUserService = planitUserService;
         this.roleService = roleService;
+        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     public static final String URL = "planit-backend.com:8888/api/user";
@@ -191,7 +197,83 @@ public class UserController {
         response.setStatus(HttpStatus.OK);
         response.setMessage("Poprawnie zmieniono hasło");
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
-
     }
 
+    @RequestMapping(value = "/generate-token", method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> generateToken(@Valid @RequestBody TokenEmail tokenEmail) {
+
+        logger.info("ŻĄDANIE WYGENEROWANIA NOWEGO TOKENU RESETUJĄCEGO HASŁO");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        PlanitUser user = planitUserService.findUserByEmail(tokenEmail.getEmail());
+
+        if (user == null) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("Nie znaleziono użytkownika o danym adresie email");
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        // Wygenerowanie tokena
+        PasswordToken passwordToken = PasswordTokenUtil.generateToken(user);
+
+        // Zapisanie tokena w bazie danych
+        if (tokenService.saveToken(passwordToken) == null) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Wysłanie wiadomości email do użytkownika
+        String resetLink = PasswordTokenUtil.generateResetLink(passwordToken);
+        PasswordTokenUtil.sendEmail(mailSender, resetLink, tokenEmail.getEmail());
+
+        response.setStatus(HttpStatus.OK);
+        response.setMessage("Wysłano email do użytkownika");
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/restore-password", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> restorePassword(@Valid @RequestBody ResetPassword resetPassword) {
+
+        logger.info("ŻĄDANIE PRZYWRÓCENIA HASŁA");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        PasswordToken token = tokenService.findToken(resetPassword.getToken());
+
+        // Walidacja tokena
+        if (!PasswordTokenUtil.validateToken(token, resetPassword.getId())) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("Token nieprawidłowy");
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        PlanitUser planitUser = planitUserService.findUserById(resetPassword.getId());
+
+        planitUser.setPassword(passwordEncoder.encode(resetPassword.getPassword()));
+        planitUser.setRepeatedPassword(planitUser.getPassword());
+
+        if (planitUserService.saveUser(planitUser) == null) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("Wystąpił problem podczas zapisu do bazy danych");
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        tokenService.deleteToken(token);
+
+        response.setStatus(HttpStatus.OK);
+        response.setMessage("Pomyślnie zaktualizowano hasło");
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
 }

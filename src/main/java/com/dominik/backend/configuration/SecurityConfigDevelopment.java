@@ -60,6 +60,8 @@ public class SecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
                 .antMatchers("/console/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register", "/user/register/").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/login", "/user/login/").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/generate-token").permitAll()
+                .antMatchers(HttpMethod.PUT, "/user/restore-password").permitAll()
                 .antMatchers("user/**").hasRole("STUDENT")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest()

@@ -12,6 +12,7 @@ public interface PlanitUserService {
     PlanitUser saveUser(PlanitUser user);
     PlanitUser findUserByLogin(String login);
     PlanitUser findUserById(Long id);
+    PlanitUser findUserByEmail(String email);
     List<PlanitUser> getAllUsers();
     void deleteUserById(Long id);
 }

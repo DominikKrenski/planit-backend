@@ -46,4 +46,9 @@ public class PlanitUserServiceImpl implements PlanitUserService {
     public void deleteUserById(Long id) {
         userRepository.delete(id);
     }
+
+    @Override
+    public PlanitUser findUserByEmail(String email) {
+        return userRepository.findOneByEmail(email);
+    }
 }
