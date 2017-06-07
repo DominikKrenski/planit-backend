@@ -65,6 +65,11 @@ databaseChangeLog:
                   type: VARCHAR(2147483647)
                   constraints:
                     defaultValue: ''
+              - column:
+                  name: avatar
+                  type: TEXT
+                  constraints:
+                    defaultValue: ''
 
         - createSequence:
             sequenceName: users_id_seq

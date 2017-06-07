@@ -97,6 +97,11 @@ public class PlanitUser {
     @ApiModelProperty(notes = "Info about user", required = true, position = 11)
     private String info;
 
+    @Lob
+    @Column(name = "avatar", nullable = false)
+    @JsonProperty("AVATAR")
+    @ApiModelProperty(notes = "User's avatar (if no avatar is chosen - set '')", required = true, position = 12)
+    private String avatar;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -108,7 +113,7 @@ public class PlanitUser {
     protected PlanitUser() {}
 
     public PlanitUser(String login, String password, String repeatedPassword, String name, String surname, String email,
-                      String group, int indexNumber, int startYear, String info) {
+                      String group, int indexNumber, int startYear, String info, String avatar) {
         this.login = login;
         this.password = password;
         this.repeatedPassword = repeatedPassword;
@@ -119,6 +124,7 @@ public class PlanitUser {
         this.indexNumber = indexNumber;
         this.startYear = startYear;
         this.info = info;
+        this.avatar = avatar;
     }
 
     @JsonIgnore
@@ -215,6 +221,14 @@ public class PlanitUser {
         return  info;
     }
 
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
     @JsonIgnore
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
@@ -236,24 +250,24 @@ public class PlanitUser {
         if (getStartYear() != that.getStartYear()) return false;
         if (!getLogin().equals(that.getLogin())) return false;
         if (!getPassword().equals(that.getPassword())) return false;
+        if (!getRepeatedPassword().equals(that.getRepeatedPassword())) return false;
         if (!getName().equals(that.getName())) return false;
         if (!getSurname().equals(that.getSurname())) return false;
         if (!getEmail().equals(that.getEmail())) return false;
-        if (!getGroup().equals(that.getGroup())) return false;
-        return getInfo().equals(that.getInfo());
+        return getGroup().equals(that.getGroup());
     }
 
     @Override
     public int hashCode() {
         int result = getLogin().hashCode();
         result = 31 * result + getPassword().hashCode();
+        result = 31 * result + getRepeatedPassword().hashCode();
         result = 31 * result + getName().hashCode();
         result = 31 * result + getSurname().hashCode();
         result = 31 * result + getEmail().hashCode();
         result = 31 * result + getGroup().hashCode();
         result = 31 * result + getIndexNumber();
         result = 31 * result + getStartYear();
-        result = 31 * result + getInfo().hashCode();
         return result;
     }
 
@@ -271,7 +285,7 @@ public class PlanitUser {
                 ", indexNumber=" + indexNumber +
                 ", startYear=" + startYear +
                 ", info='" + info + '\'' +
-                ", roles=" + roles +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }
