@@ -1,5 +1,6 @@
 package com.dominik.backend.entity;
 
+import com.dominik.backend.validator.Avatar;
 import com.dominik.backend.validator.PasswordMatch;
 import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -99,6 +100,7 @@ public class PlanitUser {
 
     @Lob
     @Column(name = "avatar", nullable = false)
+    @Avatar
     @JsonProperty("AVATAR")
     @ApiModelProperty(notes = "User's avatar (if no avatar is chosen - set '')", required = true, position = 12)
     private String avatar;
