@@ -105,7 +105,7 @@ public class UserController {
         PlanitUser currentUser = planitUserService.findUserByLogin(login);
 
         UpdateUser user = new UpdateUser(currentUser.getLogin(), currentUser.getName(), currentUser.getSurname(), currentUser.getEmail(), currentUser.getGroup(),
-                currentUser.getIndexNumber(), currentUser.getStartYear(), currentUser.getInfo());
+                currentUser.getIndexNumber(), currentUser.getStartYear(), currentUser.getInfo(), currentUser.getRoles());
 
         return user;
     }

@@ -21,6 +21,12 @@ public class AvatarValidator implements ConstraintValidator<Avatar, String> {
     @Override
     public boolean isValid(final String avatar, final ConstraintValidatorContext context) {
 
+        // Ponieważ awatar może nie zostać podany, więc w takim przypadku walidator powinien zwrócić true
+        if (avatar.equals("") || avatar == null)
+            return true;
+
+        // W przeciwnym wypadku sprawdzam co tam zostało wpisane i czy jest zgodne z szablonem
+
         String[] substring = avatar.split(";");
 
         // Obrazy zakodowane z wykorzystaniem Base64 mają postać data:image/jpeg;base64,lsdjdkafaldkfal...

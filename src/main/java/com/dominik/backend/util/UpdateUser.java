@@ -1,5 +1,6 @@
 package com.dominik.backend.util;
 
+import com.dominik.backend.entity.Role;
 import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,6 +10,8 @@ import org.hibernate.validator.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by dominik on 03.06.17.
@@ -71,10 +74,13 @@ public class UpdateUser {
     @ApiModelProperty(notes = "Info about user", required = true, position = 11)
     private String info;
 
+    @ApiModelProperty(notes = "Roles assigned to user", required = false, position = 12)
+    private Set<Role> roles = new HashSet<>();
+
 
     protected UpdateUser() {}
 
-    public UpdateUser(String login, String name, String surname, String email, String group, int indexNumber, int startYear, String info) {
+    public UpdateUser(String login, String name, String surname, String email, String group, int indexNumber, int startYear, String info, Set<Role> roles) {
         this.login = login;
         this.name = name;
         this.surname = surname;
@@ -83,12 +89,13 @@ public class UpdateUser {
         this.indexNumber = indexNumber;
         this.startYear = startYear;
         this.info = info;
+        this.roles = roles;
         this.password = "";
     }
 
     public UpdateUser(String login, String password, String name, String surname, String email,
-                      String group, int indexNumber, int startYear, String info) {
-        this(login, name, surname, email, group, indexNumber, startYear, info);
+                      String group, int indexNumber, int startYear, String info, Set<Role> roles) {
+        this(login, name, surname, email, group, indexNumber, startYear, info, roles);
         this.password = password;
     }
 
@@ -165,6 +172,16 @@ public class UpdateUser {
 
     public String getInfo() {
         return  info;
+    }
+
+    @JsonIgnore
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @JsonProperty("ROLES")
+    public Set<Role> getRoles() {
+        return roles;
     }
 
     @Override
