@@ -1,6 +1,7 @@
 package com.dominik.backend.util;
 
 import com.dominik.backend.entity.Role;
+import com.dominik.backend.validator.Avatar;
 import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -74,13 +75,18 @@ public class UpdateUser {
     @ApiModelProperty(notes = "Info about user", required = true, position = 11)
     private String info;
 
-    @ApiModelProperty(notes = "Roles assigned to user", required = false, position = 12)
+    @Avatar
+    @JsonProperty("AVATAR")
+    @ApiModelProperty(notes = "User's avatar", required = true, position = 12)
+    private String avatar;
+
+    @ApiModelProperty(notes = "Roles assigned to user", position = 13)
     private Set<Role> roles = new HashSet<>();
 
 
     protected UpdateUser() {}
 
-    public UpdateUser(String login, String name, String surname, String email, String group, int indexNumber, int startYear, String info, Set<Role> roles) {
+    public UpdateUser(String login, String name, String surname, String email, String group, int indexNumber, int startYear, String info, String avatar, Set<Role> roles) {
         this.login = login;
         this.name = name;
         this.surname = surname;
@@ -89,13 +95,14 @@ public class UpdateUser {
         this.indexNumber = indexNumber;
         this.startYear = startYear;
         this.info = info;
+        this.avatar = avatar;
         this.roles = roles;
         this.password = "";
     }
 
     public UpdateUser(String login, String password, String name, String surname, String email,
-                      String group, int indexNumber, int startYear, String info, Set<Role> roles) {
-        this(login, name, surname, email, group, indexNumber, startYear, info, roles);
+                      String group, int indexNumber, int startYear, String info, String avatar, Set<Role> roles) {
+        this(login, name, surname, email, group, indexNumber, startYear, info, avatar,  roles);
         this.password = password;
     }
 
@@ -172,6 +179,14 @@ public class UpdateUser {
 
     public String getInfo() {
         return  info;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     @JsonIgnore
