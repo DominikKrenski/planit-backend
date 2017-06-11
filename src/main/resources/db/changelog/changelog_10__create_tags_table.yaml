@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10
+      author: dominik
+      changes:
+        - createTable:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  defaultValueComputed: nextval('tags_id_seq')
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_tags_table
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uniq_name_tags_table
+              - column:
+                  name: is_accepted
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValue: false
+
+        - createSequence:
+            sequenceName: tags_id_seq
+            ownedBy: tags
