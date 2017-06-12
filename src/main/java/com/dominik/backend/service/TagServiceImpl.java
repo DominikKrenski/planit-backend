@@ -3,10 +3,13 @@ package com.dominik.backend.service;
 import com.dominik.backend.entity.Tag;
 import com.dominik.backend.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by dominik on 11.06.2017.
  */
+
+@Service
 public class TagServiceImpl implements TagService {
 
     private TagRepository repository;

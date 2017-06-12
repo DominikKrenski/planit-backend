@@ -71,4 +71,28 @@ public class Tag {
     public boolean getIsAccepted() {
         return isAccepted;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+
+        Tag tag = (Tag) o;
+
+        return getName().equals(tag.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isAccepted=" + isAccepted +
+                '}';
+    }
 }
