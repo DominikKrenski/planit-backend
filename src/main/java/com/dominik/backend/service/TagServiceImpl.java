@@ -5,6 +5,8 @@ import com.dominik.backend.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by dominik on 11.06.2017.
  */
@@ -27,5 +29,21 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag findTagByName(String name) {
         return repository.findOneByName(name);
+    }
+
+    @Override
+    public List<Tag> getAllTags() {
+        List<Tag> tags = (List<Tag>)repository.findAll();
+        return tags;
+    }
+
+    @Override
+    public void deleteTags() {
+        repository.deleteAll();
+    }
+
+    @Override
+    public void deleteTag(Tag tag) {
+        repository.delete(tag);
     }
 }
