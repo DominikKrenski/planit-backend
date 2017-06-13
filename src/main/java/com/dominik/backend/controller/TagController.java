@@ -1,6 +1,7 @@
 package com.dominik.backend.controller;
 
 import com.dominik.backend.entity.Tag;
+import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
 import com.dominik.backend.service.TagService;
 import io.swagger.annotations.Api;
@@ -130,8 +131,8 @@ public class TagController {
 
         if (tag == null) {
             response.setMessage("Tag: " + tagName + "nie został odnaleziony");
-            response.setStatus(HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(response, headers, HttpStatus.NOT_FOUND);
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
         }
 
         tag.setIsAccepted(true);
@@ -143,6 +144,84 @@ public class TagController {
         }
 
         response.setMessage("Tag został zaakceptowany");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/reject/{tagName}", method = RequestMethod.PUT,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> rejectTag(@PathVariable String tagName) {
+
+        logger.info("ŻĄDANIE COFNIĘCIA AKCEPTACJI TAGA PRZEZ ADMINA");
+        logger.info("TAG NAME: " + tagName);
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Tag tag = tagService.findTagByName(tagName);
+
+        if (tag == null)
+            throw new CustomException("Tag o danej nazwie nie został znaleziony");
+
+        tag.setIsAccepted(false);
+
+        if (tagService.saveTag(tag) == null) {
+            response.setMessage("Wystąpił problem podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Tag został oznaczony jako niezaakceptowany");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/edit/{tagName}", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Tag editTag(@PathVariable String tagName) {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA TAGA PRZEZ ADMINA");
+        logger.info("TAG NAME: " + tagName);
+
+        Tag tag = tagService.findTagByName(tagName);
+
+        if (tag == null)
+            throw new CustomException("Tag o podanej nazwie nie istnieje");
+
+        return tag;
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> editTag(@Valid @RequestBody Tag tag, @PathVariable Long id) {
+
+        logger.info("ŻĄDANIE ZAKTUALIZOWANIA TAGA");
+        logger.info("TAG: " + tag);
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Tag currentTag = tagService.findTagById(id);
+
+        if (currentTag == null)
+            throw new CustomException("Tag o danym id nie został odnaleziony");
+
+        currentTag.setName(tag.getName());
+        currentTag.setIsAccepted(tag.getIsAccepted());
+
+        if (tagService.saveTag(currentTag) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano taga");
         response.setStatus(HttpStatus.OK);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
