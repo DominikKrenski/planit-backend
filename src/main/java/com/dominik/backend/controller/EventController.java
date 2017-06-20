@@ -98,6 +98,17 @@ public class EventController {
         return  events;
     }
 
+    @RequestMapping(value = "/archive", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getArchivedEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA ARCHIWALNYCH EVENTÓW");
+
+        List<Event> events = eventService.getAllArchivedEvents();
+
+        return events;
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
@@ -125,4 +136,6 @@ public class EventController {
 
         return eventResponses;
     }
+
+
 }

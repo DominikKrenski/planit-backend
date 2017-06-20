@@ -12,4 +12,5 @@ public interface EventService {
     Event saveEvent(Event event);
     List<Event> getAllEvents();
     List<Event> getAllActiveEvents();
+    List<Event> getAllArchivedEvents();
 }

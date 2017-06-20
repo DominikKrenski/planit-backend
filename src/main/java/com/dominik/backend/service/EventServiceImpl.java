@@ -37,4 +37,10 @@ public class EventServiceImpl implements EventService {
         List<Event> events = repository.findByIsArchiveFalse();
         return events;
     }
+
+    @Override
+    public List<Event> getAllArchivedEvents() {
+        List<Event> events = repository.findByIsArchiveTrue();
+        return events;
+    }
 }
