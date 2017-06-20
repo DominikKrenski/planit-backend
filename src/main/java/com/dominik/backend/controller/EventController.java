@@ -115,8 +115,8 @@ public class EventController {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE EVENTÓW, KTÓRE SĄ JUŻ NIEAKTUALNE, ALE POLE IS_ARCHIVE = FALSE");
 
-        //LocalDate date = LocalDate.now();
-        LocalDate date = LocalDate.parse("2017-06-30");
+        LocalDate date = LocalDate.now();
+        //LocalDate date = LocalDate.parse("2017-06-30");
 
         List<Event> events = eventService.getAllPastEvents(date);
         List<EventResponse> eventResponses = new LinkedList<>();
