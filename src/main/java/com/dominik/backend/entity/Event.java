@@ -1,5 +1,6 @@
 package com.dominik.backend.entity;
 
+import com.dominik.backend.validator.ValidDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,6 +54,7 @@ public class Event {
     @Column(name = "start_date", nullable = false)
     @NotNull(message = "{null.message}")
     @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "{startDatePattern.message}")
+    @ValidDate
     @JsonFormat(pattern = "dd/mm/yyyy")
     @JsonProperty("START_DATE")
     @ApiModelProperty(notes = "Event's start date in format dd/mm/yyyy", required = true, position = 5)
