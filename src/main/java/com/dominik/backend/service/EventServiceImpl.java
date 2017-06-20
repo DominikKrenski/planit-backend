@@ -28,6 +28,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Iterable<Event> saveEvents(List<Event> events) {
+        return  repository.save(events);
+    }
+
+    @Override
     public List<Event> getAllEvents() {
         List<Event> events = (List<Event>) repository.findAll();
         return events;
@@ -64,5 +69,11 @@ public class EventServiceImpl implements EventService {
     public Event getEventById(Long id) {
         Event event = repository.findOne(id);
         return event;
+    }
+
+    @Override
+    public List<Event> getEventsByUserId(Long id) {
+        List<Event> events = repository.getEventsByUserId(id);
+        return events;
     }
 }

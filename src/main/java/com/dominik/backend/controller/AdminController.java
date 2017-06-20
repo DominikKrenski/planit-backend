@@ -1,8 +1,10 @@
 package com.dominik.backend.controller;
 
+import com.dominik.backend.entity.Event;
 import com.dominik.backend.entity.PlanitUser;
 import com.dominik.backend.entity.Role;
 import com.dominik.backend.response.AppResponse;
+import com.dominik.backend.service.EventService;
 import com.dominik.backend.service.PlanitUserService;
 import com.dominik.backend.service.RoleService;
 import com.dominik.backend.util.Email;
@@ -37,12 +39,14 @@ public class AdminController {
 
     private PlanitUserService planitUserService;
     private RoleService roleService;
+    private EventService eventService;
     private JavaMailSender javaMailSender;
 
     @Autowired
-    public AdminController(PlanitUserService planitUserService, RoleService roleService, JavaMailSender javaMailSender) {
+    public AdminController(PlanitUserService planitUserService, RoleService roleService, EventService eventService, JavaMailSender javaMailSender) {
         this.planitUserService = planitUserService;
         this.roleService = roleService;
+        this.eventService = eventService;
         this.javaMailSender = javaMailSender;
     }
 
@@ -104,6 +108,22 @@ public class AdminController {
             response.setMessage("Nie istnieje użytkownik o danym id");
             return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
         }
+
+        // Pobranie wszystkich eventów związanych z danym użytkownikiem
+        List<Event> events = eventService.getEventsByUserId(id);
+
+        // Ustawienie user_id na null
+        for (Event event: events) {
+            event.setUser(null);
+        }
+
+        // Zapisanie eventów w bazie danych
+        if (eventService.saveEvents(events) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
 
         planitUserService.deleteUserById(id);
 
