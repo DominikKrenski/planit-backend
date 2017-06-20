@@ -1,6 +1,7 @@
 package com.dominik.backend.entity;
 
 import com.dominik.backend.validator.ValidDate;
+import com.dominik.backend.validator.ValidHours;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,6 +20,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "events")
+@ValidHours(first = "startHour", second = "endHour")
 public class Event {
 
     @Id
