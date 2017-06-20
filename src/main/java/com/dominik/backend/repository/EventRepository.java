@@ -15,4 +15,7 @@ public interface EventRepository extends CrudRepository<Event, Long> {
     List<Event> findByIsArchiveTrue();
     List<Event> findByStartDateBeforeAndIsArchiveFalse(LocalDate date);
     Event findOne(Long id);
+
+    @Query(value = "SELECT * FROM events WHERE user_id = ?1", nativeQuery = true)
+    List<Event> getEventsByUserId(Long id);
 }
