@@ -81,6 +81,5 @@ public class EventController {
         response.setStatus(HttpStatus.CREATED);
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
-
     }
 }
