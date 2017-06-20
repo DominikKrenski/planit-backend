@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface ValidHours {
 
-    String message() default "Godzina rozpoczęcia jest wcześniejsza niż godzina zakończenia";
+    String message() default "Godzina rozpoczęcia jest późniejsza niż godzina zakończenia";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Created by dominik on 20.06.2017.

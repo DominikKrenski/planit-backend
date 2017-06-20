@@ -39,7 +39,7 @@ public class ValidHoursValidator implements ConstraintValidator<ValidHours, Obje
             LocalTime startHour = LocalTime.parse(firstValue);
             LocalTime endHour = LocalTime.parse(secondValue);
 
-            if (startHour.isBefore(endHour))
+            if (startHour.isAfter(endHour))
                 return false;
 
             return true;

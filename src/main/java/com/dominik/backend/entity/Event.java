@@ -55,38 +55,35 @@ public class Event {
 
     @Column(name = "start_date", nullable = false)
     @NotNull(message = "{null.message}")
-    @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "{startDatePattern.message}")
     @ValidDate
-    @JsonFormat(pattern = "dd/mm/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonProperty("START_DATE")
     @ApiModelProperty(notes = "Event's start date in format dd/mm/yyyy", required = true, position = 5)
     private LocalDate startDate;
 
     @Column(name = "start_hour", nullable = false)
     @NotNull(message = "{null.message}")
-    @Pattern(regexp = "^\\d{2}\\d{2}$", message = "{hourPattern.message}")
-    @JsonFormat(pattern = "KK:mm")
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("START_HOUR")
     @ApiModelProperty(notes = "Event's start hour in format KK:mm", required = true, position = 6)
     private LocalTime startHour;
 
     @Column(name = "end_hour", nullable = false)
     @NotNull(message = "{null.message}")
-    @Pattern(regexp = "^\\d{2}\\d{2}$", message = "{hourPattern.message}")
-    @JsonFormat(pattern = "KK:mm")
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("END_HOUR")
     @ApiModelProperty(notes = "Event's end hour", required = true, position = 7)
     private LocalTime endHour;
 
     @Column(name = "is_archive", nullable = false)
     @NotNull(message = "{null.message}")
-    @Pattern(regexp = "^(true)|(false)$", message = "{archive.message}")
     @JsonProperty("IS_ARCHIVE")
     @ApiModelProperty(notes = "Flag indicating if event is finished or not, default: false", required = true, position = 8)
     private boolean isArchive;
 
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk2_users_table"))
+    @JsonIgnore
     private PlanitUser user;
 
     protected Event() { }
@@ -169,12 +166,10 @@ public class Event {
         return isArchive;
     }
 
-    @JsonIgnore
     public void setUser(PlanitUser user) {
         this.user = user;
     }
 
-    @JsonProperty("USER")
     public PlanitUser getUser() {
         return user;
     }
