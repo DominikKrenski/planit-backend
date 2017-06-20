@@ -5,6 +5,7 @@ import com.dominik.backend.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -32,15 +33,36 @@ public class EventServiceImpl implements EventService {
         return events;
     }
 
+    /**
+     * Metoda zwracająca wszystkie wydarzenia, których pole isArchive = false
+     */
     @Override
     public List<Event> getAllActiveEvents() {
         List<Event> events = repository.findByIsArchiveFalse();
         return events;
     }
 
+    /**
+     * Metoda zwracająca wszystkie wydarzenia, których pole isArchive = true
+     */
     @Override
     public List<Event> getAllArchivedEvents() {
         List<Event> events = repository.findByIsArchiveTrue();
         return events;
+    }
+
+    /**
+     * Metoda zwracająca wszystkie wydarzenia, które są wcześniejsze od bieżącej daty oraz mają pole isArchive = false
+     */
+    @Override
+    public List<Event> getAllPastEvents(LocalDate date) {
+        List<Event> events = repository.findByStartDateBeforeAndIsArchiveFalse(date);
+        return events;
+    }
+
+    @Override
+    public Event getEventById(Long id) {
+        Event event = repository.findOne(id);
+        return event;
     }
 }

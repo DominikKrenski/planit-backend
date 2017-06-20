@@ -2,6 +2,7 @@ package com.dominik.backend.service;
 
 import com.dominik.backend.entity.Event;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -13,4 +14,6 @@ public interface EventService {
     List<Event> getAllEvents();
     List<Event> getAllActiveEvents();
     List<Event> getAllArchivedEvents();
+    List<Event> getAllPastEvents(LocalDate date);
+    Event getEventById(Long id);
 }
