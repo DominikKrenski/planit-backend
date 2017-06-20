@@ -5,6 +5,8 @@ import com.dominik.backend.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by dominik on 20.06.2017.
  */
@@ -22,5 +24,17 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event saveEvent(Event event) {
         return repository.save(event);
+    }
+
+    @Override
+    public List<Event> getAllEvents() {
+        List<Event> events = (List<Event>) repository.findAll();
+        return events;
+    }
+
+    @Override
+    public List<Event> getAllActiveEvents() {
+        List<Event> events = repository.findByIsArchiveFalse();
+        return events;
     }
 }

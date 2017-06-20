@@ -5,6 +5,7 @@ import com.dominik.backend.entity.PlanitUser;
 import com.dominik.backend.response.AppResponse;
 import com.dominik.backend.service.EventService;
 import com.dominik.backend.service.PlanitUserService;
+import com.dominik.backend.util.EventResponse;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dominik on 20.06.2017.
@@ -81,5 +85,44 @@ public class EventController {
         response.setStatus(HttpStatus.CREATED);
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/active", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getActiveEvents() {
+
+        logger.info("NADZESZŁO ŻĄDANIE ZWRÓCENIA LISTY AKTYWNYCH EVENTÓW");
+
+        List<Event> events = eventService.getAllActiveEvents();
+
+        return  events;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventResponse> getAllEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA WSZYSTKICH EVENTÓW PRZEZ ADMINA");
+
+        List<Event> events = eventService.getAllEvents();
+        List<EventResponse> eventResponses = new ArrayList<>();
+
+        for (Event event: events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }
+
+        return eventResponses;
     }
 }
