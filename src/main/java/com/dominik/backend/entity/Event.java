@@ -1,6 +1,14 @@
 package com.dominik.backend.entity;
 
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -8,17 +16,73 @@ import java.time.LocalTime;
  * Created by dominik on 20.06.2017.
  */
 
+@Entity
 @Table(name = "events")
 public class Event {
 
+    @Id
+    @SequenceGenerator(sequenceName = "events_id_seq", name = "EventIdSequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EventIdSequence")
+    @Column(name = "id")
+    @ApiModelProperty(notes = "Event's id (empty if request incomes)", required = false, position = 1)
     private Long id;
+
+    @Column(name = "name", length = 50, nullable = false, unique = true)
+    @NotNull(message = "{null.message}")
+    @JsonProperty("NAME")
+    @ApiModelProperty(notes = "Event's name", required = true, position = 2)
     private String name;
+
+    @Column(name = "place", nullable = false)
+    @NotNull(message = "{null.message}")
+    @Size(min = 5, max = 255, message = "{planeName.message}")
+    @Pattern(regexp = "^[A-Za-z0-9ĘÓĄŚŁŻŹĆŃęóąśłżźćń_ ]{5,255}$", message = "{placeNamePattern.message}")
+    @JsonProperty("PLACE")
+    @ApiModelProperty(notes = "Event's place address (allowed characters are: letters, digits, spaces and _)," +
+            "minLength: 5 maxLength: 255", required = true, position = 3)
     private String place;
+
+    @Column(name = "type", length = 30, nullable = false)
+    @NotNull(message = "{null.message}")
+    @Size(min = 5, max = 30, message = "{type.message}")
+    @Pattern(regexp = "[A-Za-z0-9ĘÓĄŚŁŻŹĆŃęóąśłżźćń]{5,30}$", message = "{eventPattern.message}")
+    @JsonProperty("TYPE")
+    @ApiModelProperty(notes = "Event's type", required = true, position = 4)
     private String type;
+
+    @Column(name = "start_date", nullable = false)
+    @NotNull(message = "{null.message}")
+    @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "{startDatePattern.message}")
+    @JsonFormat(pattern = "dd/mm/yyyy")
+    @JsonProperty("START_DATE")
+    @ApiModelProperty(notes = "Event's start date in format dd/mm/yyyy", required = true, position = 5)
     private LocalDate startDate;
+
+    @Column(name = "start_hour", nullable = false)
+    @NotNull(message = "{null.message}")
+    @Pattern(regexp = "^\\d{2}\\d{2}$", message = "{hourPattern.message}")
+    @JsonFormat(pattern = "KK:mm")
+    @JsonProperty("START_HOUR")
+    @ApiModelProperty(notes = "Event's start hour in format KK:mm", required = true, position = 6)
     private LocalTime startHour;
+
+    @Column(name = "end_hour", nullable = false)
+    @NotNull(message = "{null.message}")
+    @Pattern(regexp = "^\\d{2}\\d{2}$", message = "{hourPattern.message}")
+    @JsonFormat(pattern = "KK:mm")
+    @JsonProperty("END_HOUR")
+    @ApiModelProperty(notes = "Event's end hour", required = true, position = 7)
     private LocalTime endHour;
+
+    @Column(name = "is_archive", nullable = false)
+    @NotNull(message = "{null.message}")
+    @Pattern(regexp = "^(true)|(false)$", message = "{archive.message}")
+    @JsonProperty("IS_ARCHIVE")
+    @ApiModelProperty(notes = "Flag indicating if event is finished or not, default: false", required = true, position = 8)
     private boolean isArchive;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk2_users_table"))
     private PlanitUser user;
 
     protected Event() { }
@@ -34,13 +98,16 @@ public class Event {
         user = null;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
 
+    @JsonProperty("ID")
     public Long getId() {
         return id;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -98,10 +165,12 @@ public class Event {
         return isArchive;
     }
 
+    @JsonIgnore
     public void setUser(PlanitUser user) {
         this.user = user;
     }
 
+    @JsonProperty("USER")
     public PlanitUser getUser() {
         return user;
     }
