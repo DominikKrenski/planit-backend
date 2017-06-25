@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12
+      author: dominik
+      changes:
+        - createTable:
+            tableName: events_tags
+            columns:
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_events_table
+                    references: events(id)
+              - column:
+                  name: tag_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tags_table
+                    references: tags(id)
+
+        - addPrimaryKey:
+            constraintName: pk_events-tags_table
+            columnNames: event_id, tag_id
+            tableName: events_tags

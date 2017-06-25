@@ -32,3 +32,6 @@ databaseChangeLog:
   - include:
       file: changelog_11__create_events_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_12__create_events-tags_table.yaml
+      relativeToChangelogFile: true
