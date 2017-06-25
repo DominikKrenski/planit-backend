@@ -11,11 +11,4 @@ import java.util.List;
 public interface EventService {
 
     Event saveEvent(Event event);
-    Iterable<Event> saveEvents(List<Event> events);
-    List<Event> getAllEvents();
-    List<Event> getAllActiveEvents();
-    List<Event> getAllArchivedEvents();
-    List<Event> getAllPastEvents(LocalDate date);
-    Event getEventById(Long id);
-    List<Event> getEventsByUserId(Long id);
 }
