@@ -75,10 +75,28 @@ public class Event {
     @ApiModelProperty(notes = "Event's end hour", required = true, position = 7)
     private LocalTime endHour;
 
+    @Column(name = "is_private", nullable = false)
+    @NotNull(message = "{null.message}")
+    @JsonProperty("IS_PRIVATE")
+    @ApiModelProperty(notes = "Flag indicating if event is private or not, default: false", required = true, position = 8)
+    private boolean isPrivate;
+
+    @Column(name = "is_important")
+    @NotNull(message = "{null.message}")
+    @JsonProperty("IS_IMPORTANT")
+    @ApiModelProperty(notes = "Flag indicating is event is important for given user or not, default: false", required = true, position = 9)
+    private boolean isImportant;
+
+    @Column(name = "is_accepted")
+    @NotNull(message = "{null.message}")
+    @JsonProperty("IS_ACCEPTED")
+    @ApiModelProperty(notes = "Flag indicating if event is accepted by admin or not, default: false", required = true, position = 10)
+    private boolean isAccepted;
+
     @Column(name = "is_archive", nullable = false)
     @NotNull(message = "{null.message}")
     @JsonProperty("IS_ARCHIVE")
-    @ApiModelProperty(notes = "Flag indicating if event is finished or not, default: false", required = true, position = 8)
+    @ApiModelProperty(notes = "Flag indicating if event is finished or not, default: false", required = true, position = 11)
     private boolean isArchive;
 
     @ManyToOne
@@ -88,13 +106,17 @@ public class Event {
 
     protected Event() { }
 
-    public Event(String name, String place, String type, LocalDate startDate, LocalTime startHour, LocalTime endHour, boolean isArchive) {
+    public Event(String name, String place, String type, LocalDate startDate, LocalTime startHour, LocalTime endHour,
+                 boolean isPrivate, boolean isImportant, boolean isAccepted ,boolean isArchive) {
         this.name = name;
         this.place = place;
         this.type = type;
         this.startDate = startDate;
         this.startHour = startHour;
         this.endHour = endHour;
+        this.isPrivate = isPrivate;
+        this.isImportant = isImportant;
+        this.isAccepted = isAccepted;
         this.isArchive = isArchive;
         user = null;
     }
@@ -158,6 +180,30 @@ public class Event {
         return endHour;
     }
 
+    public void setIsPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsImportant(boolean isImportant) {
+        this.isImportant = isImportant;
+    }
+
+    public boolean getIsImportant() {
+        return isImportant;
+    }
+
+    public void setIsAccepted(boolean isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+
+    public boolean getIsAccepted() {
+        return isAccepted;
+    }
+
     public void setIsArchive(boolean isArchive) {
         this.isArchive = isArchive;
     }
@@ -181,6 +227,9 @@ public class Event {
 
         Event event = (Event) o;
 
+        if (isPrivate != event.isPrivate) return false;
+        if (isImportant != event.isImportant) return false;
+        if (isAccepted != event.isAccepted) return false;
         if (isArchive != event.isArchive) return false;
         if (!getName().equals(event.getName())) return false;
         if (!getPlace().equals(event.getPlace())) return false;
@@ -198,6 +247,9 @@ public class Event {
         result = 31 * result + getStartDate().hashCode();
         result = 31 * result + getStartHour().hashCode();
         result = 31 * result + getEndHour().hashCode();
+        result = 31 * result + (isPrivate ? 1 : 0);
+        result = 31 * result + (isImportant ? 1 : 0);
+        result = 31 * result + (isAccepted ? 1 : 0);
         result = 31 * result + (isArchive ? 1 : 0);
         return result;
     }
@@ -212,6 +264,9 @@ public class Event {
                 ", startDate=" + startDate +
                 ", startHour=" + startHour +
                 ", endHour=" + endHour +
+                ", isPrivate=" + isPrivate +
+                ", isImportant=" + isImportant +
+                ", isAccepted=" + isAccepted +
                 ", isArchive=" + isArchive +
                 '}';
     }
