@@ -13,6 +13,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by dominik on 20.06.2017.
@@ -103,6 +105,12 @@ public class Event {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk2_users_table"))
     @JsonIgnore
     private PlanitUser user;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "events_tags",
+                joinColumns = {@JoinColumn(name = "event_id")},
+                inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    private Set<Tag> tags = new HashSet<>();
 
     protected Event() { }
 
@@ -218,6 +226,16 @@ public class Event {
 
     public PlanitUser getUser() {
         return user;
+    }
+
+    @JsonIgnore
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    @JsonProperty("TAGS")
+    public Set<Tag> getTags() {
+        return tags;
     }
 
     @Override
