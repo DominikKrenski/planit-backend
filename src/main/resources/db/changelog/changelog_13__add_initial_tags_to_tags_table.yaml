@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 13
+      author: dominik
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: true
+            sql: INSERT INTO tags(name, is_accepted) VALUES ('Laboratorium', 1), ('Kolokwium', 1), ('Spotkanie', 1);
