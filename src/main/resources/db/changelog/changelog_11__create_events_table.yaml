@@ -47,6 +47,21 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: is_private
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_important
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_accepted
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
                   name: is_archive
                   type: BOOLEAN
                   constraints:
