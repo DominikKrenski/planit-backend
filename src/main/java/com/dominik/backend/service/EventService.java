@@ -12,4 +12,11 @@ public interface EventService {
 
     Event saveEvent(Event event);
     Event getEventById(Long id);
+    List<Event> getAllActiveEventsWithoutPrivates();
+    List<Event> getAllArchivedEvents();
+    List<Event> gelAllNonAcceptedEvents();
+    List<Event> getAllPastEvents(LocalDate date);
+    List<Event> getEventsByUserId(Long id);
+    List<Event> getAllEvents();
+    Iterable<Event> saveEvents(List<Event> events);
 }

@@ -31,4 +31,40 @@ public class EventServiceImpl implements EventService {
     public Event getEventById(Long id) {
         return repository.findOne(id);
     }
+
+    @Override
+    public List<Event> getAllActiveEventsWithoutPrivates() {
+        return repository.findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveFalse();
+    }
+
+    @Override
+    public List<Event> getAllArchivedEvents() {
+        return repository.findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
+    }
+
+    @Override
+    public List<Event> gelAllNonAcceptedEvents() {
+        return repository.findAllByIsAcceptedFalseAndIsPrivateFalse();
+    }
+
+    @Override
+    public List<Event> getAllPastEvents(LocalDate date) {
+        return repository.findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(date);
+    }
+
+    @Override
+    public List<Event> getEventsByUserId(Long id) {
+        List<Event> events = repository.getEventsByUserId(id);
+        return events;
+    }
+
+    @Override
+    public List<Event> getAllEvents() {
+        return repository.findAllByIsPrivateFalse();
+    }
+
+    @Override
+    public Iterable<Event> saveEvents(List<Event> events) {
+        return  repository.save(events);
+    }
 }

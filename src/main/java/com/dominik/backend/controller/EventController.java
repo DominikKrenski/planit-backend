@@ -221,4 +221,129 @@ public class EventController {
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/active", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getActiveEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE LISTY AKTYWNYCH EVENTÓW (BEZ PRYWATNYCH)");
+
+        List<Event> events = eventService.getAllActiveEventsWithoutPrivates();
+
+        return events;
+    }
+
+    @RequestMapping(value = "/archive", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getArchivedEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA ARCHIWALNYCH EVENTÓW");
+
+        List<Event> events = eventService.getAllArchivedEvents();
+
+        return events;
+    }
+
+    @RequestMapping(value = "/not-accepted", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Event> getNotAcceptedEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE NIE ZOSTAŁY JESZCZE ZAAKCEPTOWANE");
+
+        List<Event> events = eventService.gelAllNonAcceptedEvents();
+
+        return events;
+    }
+
+    @RequestMapping(value = "/past", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<EventResponse> getAllPastEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE SĄ JUŻ NIEAKTUALNE, ALE POLE IS_ARCHIVE = FALSE");
+
+        LocalDate date = LocalDate.now();
+
+        List<Event> events = eventService.getAllPastEvents(date);
+
+        List<EventResponse> eventResponses = new LinkedList<>();
+
+        for (Event event: events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }
+
+        return eventResponses;
+    }
+
+    @RequestMapping(value = "/set-archive/{id}", method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> setArchive(@PathVariable Long id) {
+
+        logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ARCHIVE NA TRUE");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Event event = eventService.getEventById(id);
+
+        if (event == null) {
+            response.setMessage("Event o danym id nie istnieje");
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        event.setIsArchive(true);
+
+        if (eventService.saveEvent(event) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano wpis");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventResponse> getAllEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA WSZYSTKICH EVENTÓW PRZEZ ADMINA");
+
+        List<Event> events = eventService.getAllEvents();
+        List<EventResponse> eventResponses = new ArrayList<>();
+
+        for (Event event: events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }
+
+        return eventResponses;
+    }
 }

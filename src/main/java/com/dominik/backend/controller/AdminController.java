@@ -90,7 +90,7 @@ public class AdminController {
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
-    /*@RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET,
+    @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> deleteUserById(@PathVariable Long id) {
 
@@ -131,7 +131,7 @@ public class AdminController {
         response.setMessage("Poprawnie usunięto użytkownika");
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
-    }*/
+    }
 
     @RequestMapping(value = "/user/send-email", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)

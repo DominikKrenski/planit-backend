@@ -12,4 +12,12 @@ import java.util.List;
  */
 public interface EventRepository extends CrudRepository<Event, Long> {
 
+    List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveFalse();
+    List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
+    List<Event> findAllByIsAcceptedFalseAndIsPrivateFalse();
+    List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);
+    List<Event> findAllByIsPrivateFalse();
+
+    @Query(value = "SELECT * FROM events WHERE user_id = ?1", nativeQuery = true)
+    List<Event> getEventsByUserId(Long id);
 }
