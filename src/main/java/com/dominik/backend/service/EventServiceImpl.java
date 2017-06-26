@@ -26,4 +26,9 @@ public class EventServiceImpl implements EventService {
     public Event saveEvent(Event event) {
         return repository.save(event);
     }
+
+    @Override
+    public Event getEventById(Long id) {
+        return repository.findOne(id);
+    }
 }

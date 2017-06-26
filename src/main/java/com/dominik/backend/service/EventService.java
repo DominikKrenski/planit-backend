@@ -11,4 +11,5 @@ import java.util.List;
 public interface EventService {
 
     Event saveEvent(Event event);
+    Event getEventById(Long id);
 }
