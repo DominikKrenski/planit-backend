@@ -20,4 +20,10 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
     @Query(value = "SELECT * FROM events WHERE user_id = ?1", nativeQuery = true)
     List<Event> getEventsByUserId(Long id);
+
+    @Query(value = "SELECT * FROM events e " +
+            "JOIN events_tags et ON e.id = et.event_id " +
+            "JOIN tags t ON et.tag_id = t.id " +
+            "WHERE t.name = ?1", nativeQuery = true)
+    List<Event> getEventsByTagName(String tagName);
 }

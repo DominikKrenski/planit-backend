@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
@@ -222,6 +223,64 @@ public class EventController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/get-privates", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getAllPrivateEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA PRYWATNYCH EVENTÓW AKTUALNIE ZALOGOWANEGO UŻYTKOWNIKA");
+
+        String login = "";
+
+        // Pobranie loginu aktualnego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+        Long id = user.getId();
+
+        List<Event> events = eventService.getEventsByUserId(id);
+        List<Event> privateEvents = new LinkedList<>();
+
+        for (Event event : events) {
+            if (event.getIsPrivate() == true)
+                privateEvents.add(event);
+        }
+
+        return privateEvents;
+    }
+
+    @RequestMapping(value = "/get-important", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getAllImportantEvents() {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE WAŻNYCH DLA AKTUALNIE ZALOGOWANEGO UŻYTKOWNIKA EVENTÓW");
+
+        String login = "";
+
+        // Pobranie loginu aktualnego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long id = user.getId();
+
+        List<Event> events = eventService.getEventsByUserId(id);
+        List<Event> importantEvents = new LinkedList<>();
+
+        for (Event event : events) {
+            if (event.getIsImportant() == true)
+                importantEvents.add(event);
+        }
+
+        return importantEvents;
+
+    }
+
     @RequestMapping(value = "/active", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Event> getActiveEvents() {
@@ -254,6 +313,37 @@ public class EventController {
         List<Event> events = eventService.gelAllNonAcceptedEvents();
 
         return events;
+    }
+
+    @RequestMapping(value = "/set-accepted/{id}", method = RequestMethod.PUT,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> setAccepted(@PathVariable Long id) {
+
+        logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ACCEPTED NA TRUE");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Event event = eventService.getEventById(id);
+
+        if (event == null) {
+            response.setMessage("Event o danym id nie istnieje");
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        event.setIsAccepted(true);
+
+        if (eventService.saveEvent(event) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano wpis");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/past", method = RequestMethod.GET,

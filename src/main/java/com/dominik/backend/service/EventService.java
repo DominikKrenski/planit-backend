@@ -17,6 +17,8 @@ public interface EventService {
     List<Event> gelAllNonAcceptedEvents();
     List<Event> getAllPastEvents(LocalDate date);
     List<Event> getEventsByUserId(Long id);
+    List<Event> getEventsByTagName(String tagName);
     List<Event> getAllEvents();
+    List<Event> getWholeEventsList();
     Iterable<Event> saveEvents(List<Event> events);
 }

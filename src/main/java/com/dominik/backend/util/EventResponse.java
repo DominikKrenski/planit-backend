@@ -20,13 +20,14 @@ public class EventResponse {
     private LocalDate startDate;
     private LocalTime startHour;
     private LocalTime endHour;
+    private boolean isAccepted;
     private boolean isArchive;
     private Long userId;
 
     public EventResponse() {}
 
     public EventResponse(Long id, String name, String place, String type, LocalDate startDate, LocalTime startHour, LocalTime endHour,
-                         boolean isArchive, Long userId)
+                        boolean isAccepted, boolean isArchive, Long userId)
     {
         this.id = id;
         this.name = name;
@@ -35,6 +36,7 @@ public class EventResponse {
         this.startDate = startDate;
         this.startHour = startHour;
         this.endHour = endHour;
+        this.isAccepted = isAccepted;
         this.isArchive = isArchive;
         this.userId = userId;
     }
@@ -113,6 +115,16 @@ public class EventResponse {
     }
 
     @JsonIgnore
+    public void setIsAccepted(boolean isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+
+    @JsonProperty("IS_ACCEPTED")
+    public boolean getIsAccepted() {
+        return isAccepted;
+    }
+
+    @JsonIgnore
     public void setIsArchive(boolean isArchive) {
         this.isArchive = isArchive;
     }
@@ -139,25 +151,25 @@ public class EventResponse {
 
         EventResponse that = (EventResponse) o;
 
+        if (isAccepted != that.isAccepted) return false;
         if (isArchive != that.isArchive) return false;
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-        if (getPlace() != null ? !getPlace().equals(that.getPlace()) : that.getPlace() != null) return false;
-        if (getType() != null ? !getType().equals(that.getType()) : that.getType() != null) return false;
-        if (getStartDate() != null ? !getStartDate().equals(that.getStartDate()) : that.getStartDate() != null)
-            return false;
-        if (getStartHour() != null ? !getStartHour().equals(that.getStartHour()) : that.getStartHour() != null)
-            return false;
-        return getEndHour() != null ? getEndHour().equals(that.getEndHour()) : that.getEndHour() == null;
+        if (!getName().equals(that.getName())) return false;
+        if (!getPlace().equals(that.getPlace())) return false;
+        if (!getType().equals(that.getType())) return false;
+        if (!getStartDate().equals(that.getStartDate())) return false;
+        if (!getStartHour().equals(that.getStartHour())) return false;
+        return getEndHour().equals(that.getEndHour());
     }
 
     @Override
     public int hashCode() {
-        int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getPlace() != null ? getPlace().hashCode() : 0);
-        result = 31 * result + (getType() != null ? getType().hashCode() : 0);
-        result = 31 * result + (getStartDate() != null ? getStartDate().hashCode() : 0);
-        result = 31 * result + (getStartHour() != null ? getStartHour().hashCode() : 0);
-        result = 31 * result + (getEndHour() != null ? getEndHour().hashCode() : 0);
+        int result = getName().hashCode();
+        result = 31 * result + getPlace().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getStartDate().hashCode();
+        result = 31 * result + getStartHour().hashCode();
+        result = 31 * result + getEndHour().hashCode();
+        result = 31 * result + (isAccepted ? 1 : 0);
         result = 31 * result + (isArchive ? 1 : 0);
         return result;
     }
@@ -172,7 +184,8 @@ public class EventResponse {
                 ", startDate=" + startDate +
                 ", startHour=" + startHour +
                 ", endHour=" + endHour +
-                ", isValid=" + isArchive +
+                ", isAccepted=" + isAccepted +
+                ", isArchive=" + isArchive +
                 ", userId=" + userId +
                 '}';
     }

@@ -67,4 +67,16 @@ public class EventServiceImpl implements EventService {
     public Iterable<Event> saveEvents(List<Event> events) {
         return  repository.save(events);
     }
+
+    @Override
+    public List<Event> getEventsByTagName(String tagName) {
+        return repository.getEventsByTagName(tagName);
+    }
+
+    @Override
+    public List<Event> getWholeEventsList() {
+        List<Event> events = (List<Event>) repository.findAll();
+
+        return events;
+    }
 }

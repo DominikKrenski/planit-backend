@@ -1,8 +1,10 @@
 package com.dominik.backend.controller;
 
+import com.dominik.backend.entity.Event;
 import com.dominik.backend.entity.Tag;
 import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
+import com.dominik.backend.service.EventService;
 import com.dominik.backend.service.TagService;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
@@ -33,9 +35,12 @@ public class TagController {
 
     private TagService tagService;
 
+    private EventService eventService;
+
     @Autowired
-    public TagController(TagService tagService) {
+    public TagController(TagService tagService, EventService eventService) {
         this.tagService = tagService;
+        this.eventService = eventService;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET,
@@ -55,6 +60,11 @@ public class TagController {
     public ResponseEntity<AppResponse> deleteTags() {
 
         logger.info("ŻĄDANIE USUNIĘCIA WSZYSTKICH TAGÓW");
+
+        List<Event> events = eventService.getAllEvents();
+
+        for (Event event : events)
+            event.setTags(null);
 
         tagService.deleteTags();
 
@@ -82,6 +92,12 @@ public class TagController {
             response.setMessage("Brak żądanego taga");
             response.setStatus(HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        List<Event>events = eventService.getEventsByTagName(tagName);
+
+        for (Event event : events) {
+            event.getTags().remove(tag);
         }
 
         tagService.deleteTag(tag);
