@@ -317,6 +317,7 @@ public class EventController {
 
     @RequestMapping(value = "/set-accepted/{id}", method = RequestMethod.PUT,
                     produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AppResponse> setAccepted(@PathVariable Long id) {
 
         logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ACCEPTED NA TRUE");
@@ -344,6 +345,38 @@ public class EventController {
         response.setMessage("Poprawnie zaktualizowano wpis");
         response.setStatus(HttpStatus.OK);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/revoke-accepted/{id}", method = RequestMethod.PUT,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> revokeAccepted(@PathVariable Long id) {
+
+        logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ACCEPTED NA FALSE");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Event event = eventService.getEventById(id);
+
+        if (event == null) {
+            response.setMessage("Event o danym id nie istnieje");
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        event.setIsAccepted(false);
+
+        if (eventService.saveEvent(event) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano wpis");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpHeaders.OK);
     }
 
     @RequestMapping(value = "/past", method = RequestMethod.GET,
