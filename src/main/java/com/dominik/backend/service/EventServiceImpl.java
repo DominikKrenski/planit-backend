@@ -79,4 +79,9 @@ public class EventServiceImpl implements EventService {
 
         return events;
     }
+
+    @Override
+    public List<Event> getAllActiveEvents() {
+        return repository.findAllByIsAcceptedTrueAndIsArchiveFalse();
+    }
 }

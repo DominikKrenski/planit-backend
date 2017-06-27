@@ -13,6 +13,7 @@ import java.util.List;
 public interface EventRepository extends CrudRepository<Event, Long> {
 
     List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveFalse();
+    List<Event> findAllByIsAcceptedTrueAndIsArchiveFalse();
     List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
     List<Event> findAllByIsAcceptedFalseAndIsPrivateFalse();
     List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);
@@ -25,5 +26,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
             "JOIN events_tags et ON e.id = et.event_id " +
             "JOIN tags t ON et.tag_id = t.id " +
             "WHERE t.name = ?1", nativeQuery = true)
+
     List<Event> getEventsByTagName(String tagName);
 }

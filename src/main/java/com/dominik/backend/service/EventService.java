@@ -21,4 +21,5 @@ public interface EventService {
     List<Event> getAllEvents();
     List<Event> getWholeEventsList();
     Iterable<Event> saveEvents(List<Event> events);
+    List<Event> getAllActiveEvents();
 }

@@ -489,7 +489,8 @@ public class EventController {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE LISTY AKTYWNYCH EVENTÓW (BEZ PRYWATNYCH)");
 
-        List<Event> events = eventService.getAllActiveEventsWithoutPrivates();
+        //List<Event> events = eventService.getAllActiveEventsWithoutPrivates();
+        List<Event> events = eventService.getAllActiveEvents();
 
         return events;
     }
