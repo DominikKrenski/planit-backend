@@ -375,6 +375,56 @@ public class EventController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/revoke-important/{id}", method = RequestMethod.PUT,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> revokeImportant(@PathVariable Long id) {
+
+        logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_IMPORTANT = FALSE");
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Event event = eventService.getEventById(id);
+
+        if (event == null) {
+            response.setMessage("Brak eventu o danym id");
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        // Pobranie loginu aktualnego użytkownika
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        // Pobranie użytkownika za bazy danych
+        PlanitUser user = userService.findUserByLogin(login);
+
+        // Sprawdzenie, czy user.id = event.userId, jeśli nie - wyrzucenie błędu
+        if (user.getId() != event.getUser().getId()) {
+            response.setMessage("Brak uprawnień do edycji eventu");
+            response.setStatus(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(response, headers, HttpStatus.FORBIDDEN);
+        }
+
+        event.setIsImportant(false);
+
+        // Zapisanie zmian do bazy danych
+        if (eventService.saveEvent(event) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano wpis");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/get-privates", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Event> getAllPrivateEvents() {
