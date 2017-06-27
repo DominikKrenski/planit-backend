@@ -157,7 +157,7 @@ public class EventController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "remove-tags/{id}", method = RequestMethod.DELETE,
+    @RequestMapping(value = "remove-tags/{id}", method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse>removeTagsFromEvent(@PathVariable Long id, @RequestBody Set<String> tagNames) {
