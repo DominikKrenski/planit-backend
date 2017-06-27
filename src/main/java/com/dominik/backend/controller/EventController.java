@@ -495,6 +495,17 @@ public class EventController {
         return events;
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public Event getEventById(@PathVariable Long id) {
+
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTU ZA POMOCĄ ID");
+
+        Event event = eventService.getEventById(id);
+
+        return event;
+    }
+
     @RequestMapping(value = "/archive", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Event> getArchivedEvents() {
