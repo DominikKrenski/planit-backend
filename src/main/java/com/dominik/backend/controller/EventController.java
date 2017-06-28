@@ -9,6 +9,7 @@ import com.dominik.backend.service.EventService;
 import com.dominik.backend.service.PlanitUserService;
 import com.dominik.backend.service.TagService;
 import com.dominik.backend.util.EventResponse;
+import com.dominik.backend.util.UpdateEvent;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,65 @@ public class EventController {
         response.setStatus(HttpStatus.CREATED);
 
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> updateEvent(@PathVariable Long id, @Valid @RequestBody UpdateEvent updateEvent) {
+
+        logger.info("NADESZŁO ŻĄDANIE ZAKTUALIZOWANIE EVENTU O ID = " + id);
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Event event = eventService.getEventById(id);
+
+        if (event == null) {
+            response.setMessage("Brak eventu o danym id");
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        // Pobranie loginu aktualnego użytkownika
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        // Pobranie użytkownika z bazy danych
+        PlanitUser user = userService.findUserByLogin(login);
+
+        // Sprawdzenie, czy user.Id = event.userId, jeśli nie - wyrzucenie błędu
+        if (user.getId() != event.getUser().getId()) {
+            response.setMessage("Brak uprawnień do edycji eventu");
+            response.setStatus(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(response, headers, HttpStatus.FORBIDDEN);
+        }
+
+        // Przypisanie nowych wartości do eventu
+        event.setName(updateEvent.getName());
+        event.setPlace(updateEvent.getPlace());
+        event.setType(updateEvent.getType());
+        event.setStartDate(updateEvent.getStartDate());
+        event.setStartHour(updateEvent.getStartHour());
+        event.setEndHour(updateEvent.getEndHour());
+        event.setIsImportant(updateEvent.getIsImportant());
+        event.setIsPrivate(updateEvent.getIsPrivate());
+
+        // Zapisanie eventu do bazy danych
+        if (eventService.saveEvent(event) == null) {
+            response.setMessage("Błąd podczas zapisu do bazy danych");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setMessage("Poprawnie zaktualizowano event");
+        response.setStatus(HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/add-tags/{id}", method = RequestMethod.PUT,
