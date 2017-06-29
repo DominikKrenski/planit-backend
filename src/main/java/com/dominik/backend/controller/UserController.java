@@ -142,6 +142,7 @@ public class UserController {
         currentUser.setIndexNumber(updateUser.getIndexNumber());
         currentUser.setStartYear(updateUser.getStartYear());
         currentUser.setInfo(updateUser.getInfo());
+        currentUser.setAvatar(updateUser.getAvatar());
 
         AppResponse response = new AppResponse();
         HttpHeaders headers = new HttpHeaders();
