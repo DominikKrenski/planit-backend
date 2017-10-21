@@ -1,11 +1,11 @@
 package com.dominik.backend.controller;
 
-import com.dominik.backend.entity.PasswordToken;
+//import com.dominik.backend.entity.PasswordToken;
 import com.dominik.backend.entity.PlanitUser;
 import com.dominik.backend.entity.Role;
 import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
-import com.dominik.backend.service.PasswordTokenService;
+//import com.dominik.backend.service.PasswordTokenService;
 import com.dominik.backend.service.PlanitUserService;
 import com.dominik.backend.service.RoleService;
 import com.dominik.backend.util.*;
@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 /**
@@ -40,16 +40,15 @@ public class UserController {
 
     private PlanitUserService planitUserService;
     private RoleService roleService;
-    private PasswordTokenService tokenService;
+    //private PasswordTokenService tokenService;
     private PasswordEncoder passwordEncoder;
     private JavaMailSender mailSender;
 
     @Autowired
-    public UserController(PlanitUserService planitUserService, RoleService roleService, PasswordTokenService tokenService,
+    public UserController(PlanitUserService planitUserService, RoleService roleService,
                           PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
         this.planitUserService = planitUserService;
         this.roleService = roleService;
-        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
     }
@@ -160,7 +159,53 @@ public class UserController {
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/change-password", method = RequestMethod.PUT,
+    @RequestMapping(value = "/restore-password", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppResponse> changePassword(@RequestParam("login") String login) {
+        logger.info("ŻĄDANIE ZMIANY HASŁA");
+        logger.info("LOGIN: " + login);
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        PlanitUser user = planitUserService.findUserByLogin(login);
+
+        if (user == null) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("Brak użytkownika o danym loginie");
+            return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        String email = user.getEmail();
+
+        String password = Password.generatePassword();
+
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRepeatedPassword(user.getPassword());
+
+        if (planitUserService.saveUser(user) == null) {
+            // Rozwiązanie tymczasowe, należy sprawdzić co zwraca Spring, gdy napotka problem z zapisem do bazy danych
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("Wystąpił problem podczas zapisu do bazy danych");
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("HASŁO TYMCZASOWE");
+        mailMessage.setFrom("admin@planit.com");
+        mailMessage.setText("NOWE HASŁO: " + password);
+
+        mailSender.send(mailMessage);
+
+        response.setStatus(HttpStatus.OK);;
+        response.setMessage("Poprawnie zmieniono hasło");
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+
+    }
+
+    /*@RequestMapping(value = "/change-password", method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> changePassword(@Valid @RequestBody ChangePassword password) {
@@ -276,5 +321,5 @@ public class UserController {
         response.setMessage("Pomyślnie zaktualizowano hasło");
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
-    }
+    }*/
 }

@@ -1,12 +1,12 @@
-package com.dominik.backend.entity;
+//package com.dominik.backend.entity;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 
 /**
  * Created by dominik on 05.06.2017.
  */
 
-@Entity
+/*@Entity
 @Table(name = "tokens")
 public class PasswordToken {
 
@@ -80,4 +80,4 @@ public class PasswordToken {
                 ", user=" + user +
                 '}';
     }
-}
+}*/

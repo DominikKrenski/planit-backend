@@ -36,3 +36,4 @@ overridedb.*
 dev_database.mv.db
 dev_database.trace.db
 /dev_database.trace.db
+/out

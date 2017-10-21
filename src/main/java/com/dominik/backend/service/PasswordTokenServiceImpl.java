@@ -1,15 +1,15 @@
 package com.dominik.backend.service;
 
-import com.dominik.backend.entity.PasswordToken;
-import com.dominik.backend.repository.PasswordTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+//import com.dominik.backend.entity.PasswordToken;
+//import com.dominik.backend.repository.PasswordTokenRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
 
 /**
  * Created by dominik on 05.06.2017.
  */
 
-@Service
+/*@Service
 public class PasswordTokenServiceImpl implements PasswordTokenService {
 
     private PasswordTokenRepository tokenRepository;
@@ -33,4 +33,4 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
     public void deleteToken(PasswordToken token) {
         tokenRepository.delete(token);
     }
-}
+}*/

@@ -1,21 +1,21 @@
 package com.dominik.backend.util;
 
-import com.dominik.backend.entity.PasswordToken;
-import com.dominik.backend.entity.PlanitUser;
-import com.dominik.backend.service.PasswordTokenService;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
+//import com.dominik.backend.entity.PasswordToken;
+//import com.dominik.backend.entity.PlanitUser;
+//import com.dominik.backend.service.PasswordTokenService;
+//import org.springframework.mail.SimpleMailMessage;
+//import org.springframework.mail.javamail.JavaMailSender;
+//import org.springframework.scheduling.annotation.Async;
+//import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+//import java.util.UUID;
 
 /**
  * Created by dominik on 05.06.2017.
  */
 
-@Component
-public class PasswordTokenUtil {
+//@Component
+/*public class PasswordTokenUtil {
 
     public static PasswordToken generateToken(PlanitUser user) {
 
@@ -65,4 +65,4 @@ public class PasswordTokenUtil {
 
         return true;
     }*/
-}
+//}
