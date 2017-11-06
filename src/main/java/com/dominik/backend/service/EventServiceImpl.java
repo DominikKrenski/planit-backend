@@ -84,4 +84,11 @@ public class EventServiceImpl implements EventService {
     public List<Event> getAllActiveEvents() {
         return repository.findAllByIsAcceptedTrueAndIsArchiveFalse();
     }
+
+    @Override
+    public List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate) {
+        List<Event> events = repository.findAllByStartDateAfterAndStartDateBefore(startDate, endDate);
+
+        return events;
+    }
 }

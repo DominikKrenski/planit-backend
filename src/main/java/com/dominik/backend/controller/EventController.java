@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -727,6 +728,42 @@ public class EventController {
         List<EventResponse> eventResponses = new ArrayList<>();
 
         for (Event event: events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }
+
+        return eventResponses;
+    }
+
+
+    @RequestMapping(value="/date", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventResponse> getEventsByDateRange(@RequestParam("start") String startDate, @RequestParam("end") String endDate) {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA LIST EVENTÓW ODBYWAJĄCYCH SIĘ MIĘDZY " + startDate + " A " + endDate);
+
+        startDate = startDate.replaceAll("\\.", "/");
+        endDate = endDate.replaceAll("\\.", "/");
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        LocalDate start =  LocalDate.parse(startDate, dateFormatter);
+        LocalDate stop = LocalDate.parse(endDate, dateFormatter);
+
+        List<Event> events = eventService.getEventsInRange(start, stop);
+        List<EventResponse> eventResponses = new ArrayList<>();
+
+        for (Event event : events) {
             EventResponse eventResponse = new EventResponse();
             eventResponse.setId(event.getId());
             eventResponse.setName(event.getName());

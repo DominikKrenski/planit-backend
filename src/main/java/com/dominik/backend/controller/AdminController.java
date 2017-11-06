@@ -90,6 +90,17 @@ public class AdminController {
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public PlanitUser getUserById(@PathVariable Long id) {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA UŻYTKOWNIKA O ID: " + id);
+
+        PlanitUser user = planitUserService.findUserById(id);
+
+        return user;
+    }
+
     @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> deleteUserById(@PathVariable Long id) {

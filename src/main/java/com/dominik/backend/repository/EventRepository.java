@@ -28,4 +28,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
             "WHERE t.name = ?1", nativeQuery = true)
 
     List<Event> getEventsByTagName(String tagName);
+
+    List<Event> findAllByStartDateAfterAndStartDateBefore(LocalDate startDate, LocalDate endDate);
 }
