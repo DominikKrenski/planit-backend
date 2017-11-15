@@ -205,7 +205,7 @@ public class UserController {
 
     }
 
-    /*@RequestMapping(value = "/change-password", method = RequestMethod.PUT,
+    @RequestMapping(value = "/change-password", method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> changePassword(@Valid @RequestBody ChangePassword password) {
@@ -245,7 +245,7 @@ public class UserController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/generate-token", method = RequestMethod.POST,
+    /*@RequestMapping(value = "/generate-token", method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppResponse> generateToken(@Valid @RequestBody TokenEmail tokenEmail) {
