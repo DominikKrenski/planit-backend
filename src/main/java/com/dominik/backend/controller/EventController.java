@@ -750,7 +750,7 @@ public class EventController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventResponse> getEventsByDateRange(@RequestParam("start") String startDate, @RequestParam("end") String endDate) {
 
-        logger.info("ŻĄDANIE ZWRÓCENIA LIST EVENTÓW ODBYWAJĄCYCH SIĘ MIĘDZY " + startDate + " A " + endDate);
+        logger.info("ŻĄDANIE ZWRÓCENIA LISTY EVENTÓW ODBYWAJĄCYCH SIĘ MIĘDZY " + startDate + " A " + endDate);
 
         startDate = startDate.replaceAll("\\.", "/");
         endDate = endDate.replaceAll("\\.", "/");
@@ -779,5 +779,23 @@ public class EventController {
         }
 
         return eventResponses;
+    }
+
+    @RequestMapping(value="/by-tags", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Event> getEventsByTags(@RequestParam("ids") String tags) {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA LISTY EVENTÓW ZAWIERAJĄCYCH TAGI O IDENTYFIKATORACH " + tags);
+
+        List<String> idsString = Arrays.asList(tags.split(","));
+        List<Long> ids = new ArrayList<>();
+
+        for (String id : idsString) {
+            ids.add(Long.parseLong(id));
+        }
+
+        List<Event> events = eventService.getEventsByTagIds(ids);
+
+        return events;
     }
 }

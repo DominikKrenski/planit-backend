@@ -30,4 +30,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
     List<Event> getEventsByTagName(String tagName);
 
     List<Event> findAllByStartDateAfterAndStartDateBefore(LocalDate startDate, LocalDate endDate);
+
+    List<Event> findAllByTagsIdIn(List<Long> ids);
 }
