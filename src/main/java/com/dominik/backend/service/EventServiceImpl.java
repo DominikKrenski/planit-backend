@@ -94,7 +94,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getEventsByTagIds(List<Long> ids) {
-        List<Event> events = repository.findAllByTagsIdIn(ids);
+        List<Event> events = repository.findAllDistinctByTagsIdIn(ids);
 
         return events;
     }
