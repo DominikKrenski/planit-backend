@@ -25,4 +25,5 @@ public interface EventService {
     List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate);
     List<Event> getEventsByTagIds(List<Long> ids);
     List<Event> getUserNotAcceptedEvents(Long id);
+    List<Event> getUserPastEvents(Long id, LocalDate date);
 }

@@ -679,14 +679,36 @@ public class EventController {
 
     @RequestMapping(value = "/past", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public List<EventResponse> getAllPastEvents() {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE SĄ JUŻ NIEAKTUALNE, ALE POLE IS_ARCHIVE = FALSE");
 
         LocalDate date = LocalDate.now();
 
-        List<Event> events = eventService.getAllPastEvents(date);
+        String login = "";
+
+        // Pobranie nazwy aktualnie zalogowanego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Set<Role> roleSet = user.getRoles();
+
+        Set<String> roles = new HashSet<>();
+
+        for (Role role : roleSet)
+            roles.add(role.getName());
+
+        List<Event> events;
+
+        if (roles.contains("ROLE_ADMIN"))
+            events = eventService.getAllPastEvents(date);
+        else
+            events = eventService.getUserPastEvents(user.getId(), date);
 
         List<EventResponse> eventResponses = new LinkedList<>();
 

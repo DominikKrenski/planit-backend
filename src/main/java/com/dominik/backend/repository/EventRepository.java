@@ -19,7 +19,7 @@ public interface EventRepository extends CrudRepository<Event, Long> {
     List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);
 
     //Pobranie przeszłych wydarzeń przez zwykłego użytkownika
-    List<Event> findAllByIdAndStartDateBeforeAndIsArchiveFalse(Long id, LocalDate date);
+    List<Event> findAllByUserIdAndStartDateBeforeAndIsArchiveFalse(Long id, LocalDate date);
 
     //Pobranie niezaakceptowanych wydarzeń przez zwykłego użytkownika
     List<Event> findAllByUserIdAndIsAcceptedFalse(Long id);

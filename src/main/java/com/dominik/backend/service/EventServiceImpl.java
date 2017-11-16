@@ -104,4 +104,10 @@ public class EventServiceImpl implements EventService {
         List<Event> events = repository.findAllByUserIdAndIsAcceptedFalse(id);
         return events;
     }
+
+    @Override
+    public List<Event> getUserPastEvents(Long id, LocalDate date) {
+        List<Event> events = repository.findAllByUserIdAndStartDateBeforeAndIsArchiveFalse(id, date);
+        return events;
+    }
 }
