@@ -773,6 +773,7 @@ public class EventController {
             eventResponse.setStartHour(event.getStartHour());
             eventResponse.setEndHour(event.getEndHour());
             eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setIsAccepted(event.getIsAccepted());
             eventResponse.setUserId(event.getUser().getId());
 
             eventResponses.add(eventResponse);
