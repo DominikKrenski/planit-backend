@@ -50,7 +50,7 @@ public class Event {
     @Column(name = "type", length = 30, nullable = false)
     @NotNull(message = "{null.message}")
     @Size(min = 3, max = 30, message = "{type.message}")
-    @Pattern(regexp = "[A-Za-z0-9ĘÓĄŚŁŻŹĆŃęóąśłżźćń]{5,30}$", message = "{eventPattern.message}")
+    @Pattern(regexp = "[A-Za-z0-9ĘÓĄŚŁŻŹĆŃęóąśłżźćń]{3,30}$", message = "{eventPattern.message}")
     @JsonProperty("TYPE")
     @ApiModelProperty(notes = "Event's type", required = true, position = 4)
     private String type;
