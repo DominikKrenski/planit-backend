@@ -32,7 +32,7 @@ public class Event {
     @ApiModelProperty(notes = "Event's id (empty if request incomes)", required = false, position = 1)
     private Long id;
 
-    @Column(name = "name", length = 50, nullable = false, unique = true)
+    @Column(name = "name", length = 50, nullable = false)
     @NotNull(message = "{null.message}")
     @JsonProperty("NAME")
     @ApiModelProperty(notes = "Event's name", required = true, position = 2)
