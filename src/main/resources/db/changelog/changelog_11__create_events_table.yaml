@@ -19,7 +19,7 @@ databaseChangeLog:
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-                    unique: true
+                    unique: false
                     uniqueConstraintName: uniq_name_events_table
               - column:
                   name: place
