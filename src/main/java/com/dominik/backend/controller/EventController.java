@@ -2,6 +2,7 @@ package com.dominik.backend.controller;
 
 import com.dominik.backend.entity.Event;
 import com.dominik.backend.entity.PlanitUser;
+import com.dominik.backend.entity.Role;
 import com.dominik.backend.entity.Tag;
 import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
@@ -580,12 +581,34 @@ public class EventController {
 
     @RequestMapping(value = "/not-accepted", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public List<Event> getNotAcceptedEvents() {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE NIE ZOSTAŁY JESZCZE ZAAKCEPTOWANE");
 
-        List<Event> events = eventService.gelAllNonAcceptedEvents();
+        String login = "";
+
+        // Pobranie nazwy aktualnie zalogowanego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof  AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Set<Role> rolesSet = user.getRoles();
+
+        Set<String> roles = new HashSet<>();
+
+        for (Role role : rolesSet)
+            roles.add(role.getName());
+
+        List<Event> events;
+
+        if (roles.contains("ROLE_ADMIN"))
+            events = eventService.gelAllNonAcceptedEvents();
+        else
+            events = eventService.getUserNotAcceptedEvents(user.getId());
 
         return events;
     }

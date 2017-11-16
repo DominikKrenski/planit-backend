@@ -98,4 +98,10 @@ public class EventServiceImpl implements EventService {
 
         return events;
     }
+
+    @Override
+    public List<Event> getUserNotAcceptedEvents(Long id) {
+        List<Event> events = repository.findAllByUserIdAndIsAcceptedFalse(id);
+        return events;
+    }
 }

@@ -17,6 +17,13 @@ public interface EventRepository extends CrudRepository<Event, Long> {
     List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
     List<Event> findAllByIsAcceptedFalseAndIsPrivateFalse();
     List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);
+
+    //Pobranie przeszłych wydarzeń przez zwykłego użytkownika
+    List<Event> findAllByIdAndStartDateBeforeAndIsArchiveFalse(Long id, LocalDate date);
+
+    //Pobranie niezaakceptowanych wydarzeń przez zwykłego użytkownika
+    List<Event> findAllByUserIdAndIsAcceptedFalse(Long id);
+
     List<Event> findAllByIsPrivateFalse();
 
     @Query(value = "SELECT * FROM events WHERE user_id = ?1", nativeQuery = true)
