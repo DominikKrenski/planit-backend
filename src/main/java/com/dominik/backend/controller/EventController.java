@@ -842,6 +842,21 @@ public class EventController {
 
         List<Event> events = eventService.getEventsByTagIds(ids);
 
+        Iterator<Event> iterator = events.iterator();
+
+        while (iterator.hasNext()) {
+            Event event = iterator.next();
+            Set<Tag> tagSet = event.getTags();
+            List<Long> idList = new LinkedList<>();
+
+            for (Tag tmp : tagSet) {
+                idList.add(tmp.getId());
+            }
+
+            if (!idList.containsAll(ids))
+                iterator.remove();
+        }
+
         return events;
     }
 }
