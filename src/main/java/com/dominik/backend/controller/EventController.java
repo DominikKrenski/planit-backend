@@ -581,10 +581,9 @@ public class EventController {
 
     @RequestMapping(value = "/not-accepted", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasRole('ADMIN')")
     public List<Event> getNotAcceptedEvents() {
 
-        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE NIE ZOSTAŁY JESZCZE ZAAKCEPTOWANE");
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW UŻYTKOWNIKA, KTÓRE NIE ZOSTAŁY JESZCZE ZAAKCEPTOWANE");
 
         String login = "";
 
@@ -596,7 +595,8 @@ public class EventController {
 
         PlanitUser user = userService.findUserByLogin(login);
 
-        Set<Role> rolesSet = user.getRoles();
+        //=============Wykomentowane dnia 02.12.2017=========================
+        /*Set<Role> rolesSet = user.getRoles();
 
         Set<String> roles = new HashSet<>();
 
@@ -605,10 +605,36 @@ public class EventController {
 
         List<Event> events;
 
+
         if (roles.contains("ROLE_ADMIN"))
             events = eventService.gelAllNonAcceptedEvents();
         else
-            events = eventService.getUserNotAcceptedEvents(user.getId());
+            events = eventService.getUserNotAcceptedEvents(user.getId());*/
+
+        //================Dodane dnia 02.12.2017===========================
+        List<Event> events = eventService.getUserNotAcceptedEvents(user.getId());
+
+        return events;
+    }
+
+    @RequestMapping(value = "/not-accepted-admin", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Event> getNotAcceptedEventsByAdmin() {
+
+        logger.info("NADESZŁO ŻĄDANIE NADESŁANE PRZEZ ADMINA ZWRÓCENIA EVENTÓW, KTÓRE NIE ZOSTAŁY JESZCZE ZAAKCEPTOWANE");
+
+        String login = "";
+
+        //Pobranie nazwy aktualnie zalogowanego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        List<Event> events = eventService.gelAllNonAcceptedEvents();
 
         return events;
     }
