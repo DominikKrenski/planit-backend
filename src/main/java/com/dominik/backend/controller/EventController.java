@@ -831,6 +831,12 @@ public class EventController {
         LocalDate start =  LocalDate.parse(startDate, dateFormatter);
         LocalDate stop = LocalDate.parse(endDate, dateFormatter);
 
+        // Odjęcie jednego dnia od daty początkowej oraz dodanie jednego dnia do daty końcowej
+        // Wówczas poprawnie będzie działać wyszukiwanie w zadanym przedziale czasu, ponieważ
+        // Spring Data Jpa wyszukuje według dat nie biorąc pod uwagę dat krańcowych
+        start = start.minusDays(1);
+        stop = stop.plusDays(1);
+
         List<Event> events = eventService.getEventsInRange(start, stop);
         List<EventResponse> eventResponses = new ArrayList<>();
 
