@@ -551,10 +551,30 @@ public class EventController {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE LISTY AKTYWNYCH EVENTÓW (BEZ PRYWATNYCH)");
 
-        //List<Event> events = eventService.getAllActiveEventsWithoutPrivates();
         List<Event> events = eventService.getAllActiveEvents();
+        List<Event> finalEvents = new LinkedList<>();
 
-        return events;
+        //=============Kod dodany 02.12.2017==========================
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof  AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long currentUserId = user.getId();
+
+        for (Event event : events) {
+
+            if ((currentUserId != event.getUser().getId()) && event.getIsPrivate() == true)
+                continue;
+
+            finalEvents.add(event);
+        }
+
+        return finalEvents;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
