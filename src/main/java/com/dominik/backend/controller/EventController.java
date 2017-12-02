@@ -834,7 +834,41 @@ public class EventController {
         List<Event> events = eventService.getEventsInRange(start, stop);
         List<EventResponse> eventResponses = new ArrayList<>();
 
+        //======================Kod wykomentowany 02.12.2017=====================
+        /*for (Event event : events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setIsAccepted(event.getIsAccepted());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }*/
+
+        //=====================Kod dodany 02.12.2017==============================
+        String login = "";
+
+        // Pobranie nazwy aktualnie zalogowanego użytkownika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long currentUserId = user.getId();
+
         for (Event event : events) {
+
+            if ((currentUserId != event.getUser().getId()) && event.getIsPrivate() == true)
+                continue;
+
             EventResponse eventResponse = new EventResponse();
             eventResponse.setId(event.getId());
             eventResponse.setName(event.getName());
