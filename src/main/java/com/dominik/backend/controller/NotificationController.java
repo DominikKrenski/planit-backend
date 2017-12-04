@@ -89,6 +89,7 @@ public class NotificationController {
 
     @RequestMapping(value = "/get-by-id", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public Notification getNotificationById(@RequestParam("id") Long id) {
 
         logger.info("POBRANIE OGŁOSZENIA O ID: " + id);
