@@ -9,4 +9,5 @@ public interface NotificationService {
     Notification saveNotification(Notification notification);
     void deleteNotificationById(Long id);
     List<Notification> getAllNotifications();
+    Notification getNotificationById(Long id);
 }

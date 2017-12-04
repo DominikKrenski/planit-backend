@@ -86,4 +86,44 @@ public class NotificationController {
 
         return notifications;
     }
+
+    @RequestMapping(value = "/get-by-id", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public Notification getNotificationById(@RequestParam("id") Long id) {
+
+        logger.info("POBRANIE OGŁOSZENIA O ID: " + id);
+
+        Notification notification = notificationService.getNotificationById(id);
+
+        return notification;
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> updateNotification(@Valid @RequestBody Notification notification) {
+
+        logger.info("ŻĄDANIE AKTUALIZACJI OGŁOSZENIA");
+
+        Notification notify = notificationService.getNotificationById(notification.getId());
+
+        notify.setTitle(notification.getTitle());
+        notify.setNotification(notification.getNotification());
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        if (notificationService.saveNotification(notify) == null) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage("Wystąpił błąd podczas zapisu do bazy danych");
+            return new ResponseEntity<>(response, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.setStatus(HttpStatus.OK);
+        response.setMessage("Poprawnie zaktualizowano ogłoszenie");
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
 }
