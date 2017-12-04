@@ -38,3 +38,6 @@ databaseChangeLog:
   - include:
       file: changelog_13__add_initial_tags_to_tags_table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog_14__create_notifications_table.yaml
+      relativeToChangelogFile: true

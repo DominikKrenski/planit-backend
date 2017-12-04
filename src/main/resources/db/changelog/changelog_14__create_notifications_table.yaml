@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 14
+      author: dominik
+      changes:
+        - createTable:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  defaultValueComputed: nextval('notifications_id_seq')
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_notifications_table
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: false
+              - column:
+                  name: notification
+                  type: TEXT
+                  constraints:
+                    nullable: false
+                    unique: false
+
+        - createSequence:
+            sequenceName: notifications_id_seq
+            ownedBy: advertisements
