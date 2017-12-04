@@ -3,7 +3,9 @@ package com.dominik.backend.service;
 import com.dominik.backend.entity.Notification;
 import com.dominik.backend.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NotificationServiceImpl implements NotificationService {
 
     private NotificationRepository notificationRepository;
