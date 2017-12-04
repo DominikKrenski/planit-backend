@@ -5,6 +5,8 @@ import com.dominik.backend.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
@@ -18,5 +20,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Notification saveNotification(Notification notification) {
         return notificationRepository.save(notification);
+    }
+
+    @Override
+    public void deleteNotificationById(Long id) {
+        notificationRepository.delete(id);
+    }
+
+    @Override
+    public List<Notification> getAllNotifications() {
+        return (List<Notification>) notificationRepository.findAll();
     }
 }

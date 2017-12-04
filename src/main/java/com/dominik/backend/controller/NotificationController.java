@@ -12,12 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/notification")
@@ -56,5 +54,36 @@ public class NotificationController {
         response.setStatus(HttpStatus.CREATED);
         response.setMessage("Poprawnie zapisano powiadomienie");
         return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AppResponse> deleteNotificationById(@RequestParam("id") Long id) {
+
+        logger.info("ŻĄDANIE USUNIĘCIA POWIADOMIENIA O DANYM ID");
+        logger.info("ID: " + id);
+
+        AppResponse response = new AppResponse();
+        HttpHeaders headers = new HttpHeaders();
+
+        notificationService.deleteNotificationById(id);
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        response.setMessage("Poprawnie usunięto powiadomianie");
+        response.setStatus(HttpStatus.OK);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Notification> getNotifications() {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA WSZYSTKICH POWIADOMIEŃ");
+
+        List<Notification> notifications = notificationService.getAllNotifications();
+
+        return notifications;
     }
 }
