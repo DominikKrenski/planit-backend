@@ -2,9 +2,7 @@ package com.dominik.backend.controller;
 
 import com.dominik.backend.entity.Event;
 import com.dominik.backend.entity.PlanitUser;
-import com.dominik.backend.entity.Role;
 import com.dominik.backend.entity.Tag;
-import com.dominik.backend.exception.CustomException;
 import com.dominik.backend.response.AppResponse;
 import com.dominik.backend.service.EventService;
 import com.dominik.backend.service.PlanitUserService;
@@ -25,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -615,22 +612,6 @@ public class EventController {
 
         PlanitUser user = userService.findUserByLogin(login);
 
-        //=============Wykomentowane dnia 02.12.2017=========================
-        /*Set<Role> rolesSet = user.getRoles();
-
-        Set<String> roles = new HashSet<>();
-
-        for (Role role : rolesSet)
-            roles.add(role.getName());
-
-        List<Event> events;
-
-
-        if (roles.contains("ROLE_ADMIN"))
-            events = eventService.gelAllNonAcceptedEvents();
-        else
-            events = eventService.getUserNotAcceptedEvents(user.getId());*/
-
         //================Dodane dnia 02.12.2017===========================
         List<Event> events = eventService.getUserNotAcceptedEvents(user.getId());
 
@@ -723,12 +704,42 @@ public class EventController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/past-admin", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<EventResponse> getAllPastEventsByAdmin() {
+
+        logger.info("ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE SĄ JUŻ NIEAKTUALNE, PRZEZ ADMINA");
+
+        LocalDate date = LocalDate.now();
+
+        List<Event> events = eventService.getAllPastEvents(date);
+
+        List<EventResponse> eventResponses = new LinkedList<>();
+
+        for (Event event : events) {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setName(event.getName());
+            eventResponse.setPlace(event.getPlace());
+            eventResponse.setType(event.getType());
+            eventResponse.setStartDate(event.getStartDate());
+            eventResponse.setStartHour(event.getStartHour());
+            eventResponse.setEndHour(event.getEndHour());
+            eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setUserId(event.getUser().getId());
+
+            eventResponses.add(eventResponse);
+        }
+
+        return eventResponses;
+    }
+
     @RequestMapping(value = "/past", method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasRole('ADMIN')")
     public List<EventResponse> getAllPastEvents() {
 
-        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA EVENTÓW, KTÓRE SĄ JUŻ NIEAKTUALNE, ALE POLE IS_ARCHIVE = FALSE");
+        logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA WSZYSTKICH PRZESZŁYCH WYDARZEŃ PRZEZ ZWYKŁEGO UŻYTKOWNIKA");
 
         LocalDate date = LocalDate.now();
 
@@ -742,23 +753,17 @@ public class EventController {
 
         PlanitUser user = userService.findUserByLogin(login);
 
-        Set<Role> roleSet = user.getRoles();
-
-        Set<String> roles = new HashSet<>();
-
-        for (Role role : roleSet)
-            roles.add(role.getName());
-
-        List<Event> events;
-
-        if (roles.contains("ROLE_ADMIN"))
-            events = eventService.getAllPastEvents(date);
-        else
-            events = eventService.getUserPastEvents(user.getId(), date);
+        List<Event> events = eventService.getUserPastEvents(date);
 
         List<EventResponse> eventResponses = new LinkedList<>();
 
-        for (Event event: events) {
+        Long currentUserId = user.getId();
+
+        for (Event event : events) {
+
+            if ((currentUserId != event.getUser().getId()) && event.getIsPrivate() == true)
+                continue;
+
             EventResponse eventResponse = new EventResponse();
             eventResponse.setId(event.getId());
             eventResponse.setName(event.getName());
@@ -768,6 +773,7 @@ public class EventController {
             eventResponse.setStartHour(event.getStartHour());
             eventResponse.setEndHour(event.getEndHour());
             eventResponse.setIsArchive(event.getIsArchive());
+            eventResponse.setIsAccepted(event.getIsAccepted());
             eventResponse.setUserId(event.getUser().getId());
 
             eventResponses.add(eventResponse);
@@ -859,25 +865,6 @@ public class EventController {
 
         List<Event> events = eventService.getEventsInRange(start, stop);
         List<EventResponse> eventResponses = new ArrayList<>();
-
-        //======================Kod wykomentowany 02.12.2017=====================
-        /*for (Event event : events) {
-            EventResponse eventResponse = new EventResponse();
-            eventResponse.setId(event.getId());
-            eventResponse.setName(event.getName());
-            eventResponse.setPlace(event.getPlace());
-            eventResponse.setType(event.getType());
-            eventResponse.setStartDate(event.getStartDate());
-            eventResponse.setStartHour(event.getStartHour());
-            eventResponse.setEndHour(event.getEndHour());
-            eventResponse.setIsArchive(event.getIsArchive());
-            eventResponse.setIsAccepted(event.getIsAccepted());
-            eventResponse.setUserId(event.getUser().getId());
-
-            eventResponses.add(eventResponse);
-        }*/
-
-        //=====================Kod dodany 02.12.2017==============================
         String login = "";
 
         // Pobranie nazwy aktualnie zalogowanego użytkownika
