@@ -2,6 +2,7 @@ package com.dominik.backend.controller;
 
 import com.dominik.backend.entity.Event;
 import com.dominik.backend.entity.PlanitUser;
+import com.dominik.backend.entity.Role;
 import com.dominik.backend.entity.Tag;
 import com.dominik.backend.response.AppResponse;
 import com.dominik.backend.service.EventService;
@@ -646,10 +647,28 @@ public class EventController {
 
     @RequestMapping(value = "/set-accepted/{id}", method = RequestMethod.PUT,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AppResponse> setAccepted(@PathVariable Long id) {
 
         logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ACCEPTED NA TRUE");
+
+        // Pobranie nazwy aktualnie zalogowanego użytkownika
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long userId = user.getId();
+
+        Set<Role> roles = user.getRoles();
+        Set<String> roleNames = new HashSet<>();
+
+        for (Role role : roles)
+            roleNames.add(role.getName());
 
         AppResponse response = new AppResponse();
         HttpHeaders headers = new HttpHeaders();
@@ -663,7 +682,17 @@ public class EventController {
             return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
         }
 
-        event.setIsAccepted(true);
+        if ((event.getUser().getId() == userId) && event.getIsPrivate() == true) {
+            event.setIsAccepted(true);
+        }
+        else if (roleNames.contains("ROLE_ADMIN")) {
+            event.setIsAccepted(true);
+        }
+        else {
+            response.setMessage("Brak uprawnień do edycji wydarzenia");
+            response.setStatus(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(response, headers, HttpStatus.FORBIDDEN);
+        }
 
         if (eventService.saveEvent(event) == null) {
             response.setMessage("Błąd podczas zapisu do bazy danych");
