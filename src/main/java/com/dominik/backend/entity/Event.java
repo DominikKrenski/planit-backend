@@ -57,7 +57,7 @@ public class Event {
 
     @Column(name = "start_date", nullable = false)
     @NotNull(message = "{null.message}")
-    //@ValidDate
+    @ValidDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonProperty("START_DATE")
     @ApiModelProperty(notes = "Event's start date in format dd/mm/yyyy", required = true, position = 5)

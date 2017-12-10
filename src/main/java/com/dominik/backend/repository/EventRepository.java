@@ -13,7 +13,9 @@ import java.util.List;
 public interface EventRepository extends CrudRepository<Event, Long> {
 
     List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveFalse();
-    List<Event> findAllByIsAcceptedTrueAndIsArchiveFalse();
+
+    List<Event> findAllByIsAcceptedTrueAndIsArchiveFalseAndStartDateAfter(LocalDate date);
+
     List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
     List<Event> findAllByIsAcceptedFalseAndIsPrivateFalse();
     List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);

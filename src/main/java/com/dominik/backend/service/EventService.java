@@ -21,7 +21,7 @@ public interface EventService {
     List<Event> getAllEvents();
     List<Event> getWholeEventsList();
     Iterable<Event> saveEvents(List<Event> events);
-    List<Event> getAllActiveEvents();
+    List<Event> getAllActiveEvents(LocalDate date);
     List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate);
     List<Event> getEventsByTagIds(List<Long> ids);
     List<Event> getUserNotAcceptedEvents(Long id);

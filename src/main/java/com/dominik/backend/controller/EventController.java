@@ -548,7 +548,11 @@ public class EventController {
 
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIE LISTY AKTYWNYCH EVENTÓW (BEZ PRYWATNYCH)");
 
-        List<Event> events = eventService.getAllActiveEvents();
+        LocalDate date = LocalDate.now();
+        date = date.minusDays(1);
+
+        List<Event> events = eventService.getAllActiveEvents(date);
+
         List<Event> finalEvents = new LinkedList<>();
 
         //=============Kod dodany 02.12.2017==========================
