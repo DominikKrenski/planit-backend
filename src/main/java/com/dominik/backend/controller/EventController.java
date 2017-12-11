@@ -660,9 +660,20 @@ public class EventController {
 
         PlanitUser user = userService.findUserByLogin(login);
 
-        List<Event> events = eventService.gelAllNonAcceptedEvents();
+        Long currentUserId = user.getId();
 
-        return events;
+        List<Event> events = eventService.gelAllNonAcceptedEvents();
+        List<Event> finalEvents = new LinkedList<>();
+
+        for (Event event : events) {
+            if ((currentUserId != event.getUser().getId()) && event.getIsPrivate() == true)
+                continue;
+
+            finalEvents.add(event);
+        }
+
+
+        return finalEvents;
     }
 
     @RequestMapping(value = "/set-accepted/{id}", method = RequestMethod.PUT,

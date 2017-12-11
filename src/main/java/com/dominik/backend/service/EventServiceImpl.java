@@ -44,7 +44,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> gelAllNonAcceptedEvents() {
-        return repository.findAllByIsAcceptedFalseAndIsPrivateFalse();
+        return repository.findAllByIsAcceptedFalse();
     }
 
     @Override
