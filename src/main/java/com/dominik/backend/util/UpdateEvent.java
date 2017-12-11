@@ -40,7 +40,7 @@ public class UpdateEvent {
     private String type;
 
     @NotNull(message = "{null.message}")
-    @ValidDate
+    //@ValidDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonProperty("START_DATE")
     @ApiModelProperty(notes = "Event's start date in format dd/mm/yyyy", required = true, position = 4)
