@@ -39,7 +39,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getAllArchivedEvents() {
-        return repository.findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
+        return repository.findAllByIsAcceptedTrueAndIsArchiveTrue();
     }
 
     @Override

@@ -597,8 +597,28 @@ public class EventController {
         logger.info("NADESZŁO ŻĄDANIE ZWRÓCENIA ARCHIWALNYCH EVENTÓW");
 
         List<Event> events = eventService.getAllArchivedEvents();
+        List<Event> finalEvents = new LinkedList<>();
 
-        return events;
+        //Pobranie nazwy aktualnie zalogowanego użytkownika
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long currentUserId = user.getId();
+
+        for (Event event : events) {
+            if ((currentUserId != event.getUser().getId()) && event.getIsPrivate() == true)
+                continue;
+
+            finalEvents.add(event);
+        }
+
+        return finalEvents;
     }
 
     @RequestMapping(value = "/not-accepted", method = RequestMethod.GET,
@@ -849,6 +869,24 @@ public class EventController {
 
         logger.info("NADESZŁO ŻĄDANIE USTAWIENIA FLAGI IS_ARCHIVE NA TRUE");
 
+        // Pobranie nazwy aktualnie zalogowanego użytkownika
+        String login = "";
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken))
+            login = authentication.getName();
+
+        PlanitUser user = userService.findUserByLogin(login);
+
+        Long userId = user.getId();
+
+        Set<Role> roles = user.getRoles();
+        Set<String> roleNames = new HashSet<>();
+
+        for (Role role : roles)
+            roleNames.add(role.getName());
+
         AppResponse response = new AppResponse();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -861,7 +899,17 @@ public class EventController {
             return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
         }
 
-        event.setIsArchive(true);
+        if ((event.getUser().getId() == userId) && event.getIsPrivate() == true) {
+            event.setIsArchive(true);
+        }
+        else if (roleNames.contains("ROLE_ADMIN")) {
+            event.setIsArchive(true);
+        }
+        else {
+            response.setMessage("Brak uprawnień do edycji wydarzenia");
+            response.setStatus(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(response, headers, HttpStatus.FORBIDDEN);
+        }
 
         if (eventService.saveEvent(event) == null) {
             response.setMessage("Błąd podczas zapisu do bazy danych");
@@ -872,6 +920,7 @@ public class EventController {
         response.setMessage("Poprawnie zaktualizowano wpis");
         response.setStatus(HttpStatus.OK);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+
     }
 
     @PreAuthorize("hasRole('ADMIN')")

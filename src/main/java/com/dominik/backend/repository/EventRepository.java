@@ -16,7 +16,7 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
     List<Event> findAllByIsAcceptedTrueAndIsArchiveFalseAndStartDateAfter(LocalDate date);
 
-    List<Event> findAllByIsAcceptedTrueAndIsPrivateFalseAndIsArchiveTrue();
+    List<Event> findAllByIsAcceptedTrueAndIsArchiveTrue();
     List<Event> findAllByIsAcceptedFalseAndIsPrivateFalse();
     List<Event> findAllByStartDateBeforeAndIsArchiveFalseAndIsPrivateFalse(LocalDate date);
 
