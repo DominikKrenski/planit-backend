@@ -6,6 +6,7 @@ import com.dominik.backend.validator.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
@@ -93,12 +94,15 @@ public class PlanitUser {
     @ApiModelProperty(notes = "User's study start year", required = true, position = 10)
     private int startYear;
 
-    @Column(name = "info", length = 2147483647)
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "info", nullable = false)
     @JsonProperty("INFO")
     @ApiModelProperty(notes = "Info about user", required = true, position = 11)
     private String info;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "avatar", nullable = false)
     @Avatar
     @JsonProperty("AVATAR")

@@ -3,6 +3,7 @@ package com.dominik.backend.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class Notification {
     private String title;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "notification")
     @NotNull(message = "{null.message}")
     @JsonProperty("NOTIFICATION")

@@ -66,7 +66,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: info
-                  type: VARCHAR(2147483647)
+                  type: TEXT
                   constraints:
                     defaultValue: ''
               - column:
