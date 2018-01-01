@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 11
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: events_id_seq
+            ownedBy: events
+
         - createTable:
             tableName: events
             columns:
@@ -74,7 +78,3 @@ databaseChangeLog:
                     defaultValue: false
                     foreignKeyName: fk2_users_table
                     references: users(id)
-
-        - createSequence:
-            sequenceName: events_id_seq
-            ownedBy: events

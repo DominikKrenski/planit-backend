@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 2
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: roles_id_seq
+            ownedBy: roles
+
         - createTable:
             tableName: roles
             columns:
@@ -21,7 +25,3 @@ databaseChangeLog:
                     unique: true
                     uniqueConstraintName: uniq_name_roles_table
                     nullable: false
-
-        - createSequence:
-            sequenceName: roles_id_seq
-            ownedBy: roles

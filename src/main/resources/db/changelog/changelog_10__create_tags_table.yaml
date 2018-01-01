@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 10
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: tags_id_seq
+            ownedBy: tags
+
         - createTable:
             tableName: tags
             columns:
@@ -27,7 +31,3 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     defaultValue: false
-
-        - createSequence:
-            sequenceName: tags_id_seq
-            ownedBy: tags

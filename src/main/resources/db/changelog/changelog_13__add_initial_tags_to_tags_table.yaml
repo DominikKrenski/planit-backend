@@ -6,4 +6,4 @@ databaseChangeLog:
         - sql:
             endDelimiter: ;
             splitStatements: true
-            sql: INSERT INTO tags(name, is_accepted) VALUES ('Laboratorium', 1), ('Kolokwium', 1), ('Spotkanie', 1);
+            sql: INSERT INTO tags(name, is_accepted) VALUES ('Laboratorium', true), ('Kolokwium', true), ('Spotkanie', true);

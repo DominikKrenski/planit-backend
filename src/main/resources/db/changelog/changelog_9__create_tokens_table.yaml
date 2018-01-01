@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 9
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: tokens_id_seq
+            ownedBy: tokens
+
         - createTable:
             tableName: tokens
             columns:
@@ -26,7 +30,3 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk1_users_table
                     references: users(id)
-
-        - createSequence:
-            sequenceName: tokens_id_seq
-            ownedBy: tokens

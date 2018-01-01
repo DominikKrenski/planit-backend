@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 1
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: users_id_seq
+            ownedBy: users
+
         - createTable:
             tableName: users
             columns:
@@ -70,7 +74,3 @@ databaseChangeLog:
                   type: TEXT
                   constraints:
                     defaultValue: ''
-
-        - createSequence:
-            sequenceName: users_id_seq
-            ownedBy: users

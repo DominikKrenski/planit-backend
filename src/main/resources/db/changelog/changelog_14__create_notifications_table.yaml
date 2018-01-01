@@ -3,6 +3,10 @@ databaseChangeLog:
       id: 14
       author: dominik
       changes:
+        - createSequence:
+            sequenceName: notifications_id_seq
+            ownedBy: notifications
+
         - createTable:
             tableName: notifications
             columns:
@@ -26,7 +30,3 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: false
-
-        - createSequence:
-            sequenceName: notifications_id_seq
-            ownedBy: notifications
