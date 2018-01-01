@@ -7,5 +7,4 @@ databaseChangeLog:
             endDelimiter: ;
             splitStatements: true
             sql: INSERT INTO users(login, password, name, surname, email, user_group, index_number, start_year, info, avatar) VALUES
-                ('Dorota', '$2a$10$0MbGlKeaAn06MMiAoP3aaeof/coNxQJh6uPvkw0Gbn4INvhf7LxAy', 'Dorota', 'Kreńska', 'dorciad@interia.pl', '2a',147503, 2013, '', ''),
-                ('Olek', '$2a$10$6rNYvFrcN0BSZBAllFzGtudzwSsHVhkyzN8Sx5D7qDkL6.rsCrRQO', 'Aleksander', 'Kreński', 'olek@gmail.com', '1', 27987, 2016, 'Mój kochany synek', '');
+                ('magda', '$2a$10$RMVW9CtauFJEYjprXOWjsuJf3xZbVoQA7pj4Uy6ye1ThJCseqozh.', 'Magda', 'Mrzygłocka', 'magdam@gmail.com', '2',45678, 2014, '', '');
